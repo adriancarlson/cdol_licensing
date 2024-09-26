@@ -214,11 +214,11 @@ define(function (require) {
 			$scope.confirmPopUp = (type, licenseType, userType, count) => {
 				psConfirm({
 					title: `Confirm ${type}`,
-					message: `Please confirm you want to ${type} ${licenseType} License to the selected ${count} ${userType}.`,
+					message: `Please confirm you want to ${type} ${$filter('capitalize')(licenseType)} License${count > 1 ? 's' : ''} to the selected ${count} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''}.`,
 					oktext: 'Confirm',
 					canceltext: 'Cancel',
 					ok: function () {
-						addLicenseToSelected()
+						$scope.addLicenseToSelected()
 					}
 				})
 			}
