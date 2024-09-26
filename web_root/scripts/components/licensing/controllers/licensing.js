@@ -187,6 +187,21 @@ define(function (require) {
 				})
 			}
 
+			$scope.cancelHandSelectionAdd = () => {
+				$scope.useHandSelectionAdd = false
+				$scope.selectedAddStudents = $scope.curSelectionDcids
+
+				angular.forEach($scope.filteredlicenseStudentAddList, function (student) {
+					student.selectToAdd = true // Deselect all students
+				})
+
+				// Uncheck the "checkAllRemove" checkbox
+				const checkAllElement = document.getElementById('checkAllAdd')
+				if (checkAllElement) {
+					checkAllElement.checked = true
+				}
+			}
+
 			$scope.addCollapsedClass = function (id) {
 				let headerElement = document.getElementById(id)
 				let divElement = document.getElementById(`${id}Div`)
