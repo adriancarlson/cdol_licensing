@@ -62,27 +62,40 @@ define(function (require) {
 
 					$http(httpObject).then(
 						res => {
+							let statusCode = res.status
+							let responseText = res.statusText
+
 							switch (method) {
 								case 'POST':
 								case 'PUT':
-									deferredResponse.resolve(res.data.result[0].success_message.id || [])
+									let result = res.data.result[0].success_message.id || []
+									deferredResponse.resolve({
+										result: result,
+										response_statuscode: statusCode,
+										response_text: responseText
+									})
 									break
 								case 'GET':
 									let resData = res.data.tables[tableName]
-									if (apiPayload.dateKeys) {
-										resData = formatService.objIterator(resData, apiPayload.dateKeys, 'formatDateFromApi')
-									}
-									if (apiPayload.checkBoxKeys) {
-										resData = formatService.objIterator(resData, apiPayload.checkBoxKeys, 'formatChecksFromApi')
-									}
-									deferredResponse.resolve(resData)
+									deferredResponse.resolve({
+										data: resData,
+										response_statuscode: statusCode,
+										response_text: responseText
+									})
 									break
 								case 'DELETE':
-									deferredResponse.resolve(res)
+									deferredResponse.resolve({
+										response_statuscode: statusCode,
+										response_text: responseText
+									})
 									break
 							}
 						},
 						res => {
+							deferredResponse.resolve({
+								response_statuscode: res.status,
+								response_text: res.statusText
+							})
 							psAlert({ message: `There was an error ${method}ing the data to ${tableName}`, title: `${method} Error` })
 						}
 					)

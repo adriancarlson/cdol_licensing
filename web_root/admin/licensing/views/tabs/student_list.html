@@ -15,7 +15,9 @@
                     Hand</button>
                 <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd()"
                     class="dark-orange">Cancel Select By Hand</button>
-                <button data-ng-click="addLicenseToSelected()" data-ng-disabled="selectedAddStudents.length < 1">Add
+                <button data-ng-click="confirmPopUp('Add', {{licenseType |
+                    capitalize }}, {{userType | capitalize }}, {{selectedAddStudents.length}})"
+                    data-ng-disabled="selectedAddStudents.length < 1">Add
                     License to Selected
                     ({{selectedAddStudents.length}})</button>
             </div>

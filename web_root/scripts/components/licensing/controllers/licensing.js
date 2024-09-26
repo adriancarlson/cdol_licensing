@@ -211,6 +211,71 @@ define(function (require) {
 					divElement.classList.add('concealed')
 				}
 			}
+			$scope.confirmPopUp = (type, licenseType, userType, count) => {
+				psConfirm({
+					title: `Confirm ${type}`,
+					message: `Please confirm you want to ${type} ${licenseType} License to the selected ${count} ${userType}.`,
+					oktext: 'Confirm',
+					canceltext: 'Cancel',
+					ok: function () {
+						addLicenseToSelected()
+					}
+				})
+			}
+
+			$scope.addLicenseToSelected = async () => {
+				loadingDialog()
+				let recordsProcessed = 0
+				let totalFailed = 0 // Initialize totalFailed count
+				let totalRecords = $scope.selectedAddStudents.length
+
+				// Loop through each selected student
+				for (let dcid of $scope.selectedAddStudents) {
+					// Define the payload without 'studentsdcid' for the update case (PUT)
+					let payload = {
+						license_adobe: true
+					}
+
+					try {
+						// Try to update first (PUT request)
+						let updateRes = await psApiService.psApiCall('student_additional_info', 'PUT', payload, dcid)
+
+						// If update fails with 404, attempt to insert (POST request)
+						if (updateRes.response_statuscode !== 200) {
+							if (updateRes.response_statuscode === 404) {
+								// Add 'studentsdcid' only for the insert case (POST)
+								payload['studentsdcid'] = dcid
+
+								// Attempt to insert (POST request)
+								let insertRes = await psApiService.psApiCall('student_additional_info', 'POST', payload)
+
+								if (insertRes.response_statuscode !== 200) {
+									totalFailed++ // Increment failure count if insert fails
+								}
+							} else {
+								totalFailed++ // Increment failure count if update fails
+							}
+						}
+
+						// Update progress with percentage
+						recordsProcessed++
+						let pct = Math.round((recordsProcessed / totalRecords) * 100)
+						updateLoadingDialogPercentComplete(pct) // Update loading dialog percentage
+					} catch (error) {
+						totalFailed++ // Increment failure count on unexpected errors
+					}
+
+					if (recordsProcessed === totalRecords) {
+						closeLoading()
+						$scope.loadData($scope.userType)
+					}
+				}
+
+				// Log the total number of failures
+				if (totalFailed > 0) {
+					console.log(`Total failed operations: ${totalFailed}`)
+				}
+			}
 		}
 	])
 	module.filter('capitalize', function () {
