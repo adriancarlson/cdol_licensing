@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Licensing</title>
+        <link href="/images/css/cdol_bootstrap.css?~[time]" rel="stylesheet" media="screen">
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css?~[time]" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css?~[time]" rel="stylesheet" media="print">
+        <link href="/images/css/cdol.css?~[time]" rel="stylesheet" media="screen">
+        <link href="/images/css/cdol_print.css?~[time]" rel="stylesheet" media="print">
+        <!-- <link href="/images/css/cdol_select2.css?~[time]" rel="stylesheet" media="screen"> -->
+    </head>
+
+    <body>
+        ~[wc:admin_header_css]
+        <a href="/admin/home.html" target="_top">~[text:psx.html.admin_reports.runreports.start_page]</a> &gt; Adobe
+        License
+        ~[wc:admin_navigation_css]
+        <div id="cdol-licensing-list-app-div" data-require-path="components/licensing/index"
+            data-module-name="cdolLicensingMod" data-ng-controller="cdolLicensingCtrl"
+            data-ng-cur-school-id="~(curschoolid)" data-ng-license-type="~(gpv.license_type)"
+            data-ng-user-type="~(gpv.user_type)" data-ng-cloak>
+            <h1 class="mb-1">{{licenseType | capitalize}} Licensing</h1>
+            <!-- <div class="container-fluid">
+                <div class="row">
+                    <div class="col-auto ms-auto"><button data-ng-click="reloadData()">Reload List</button></div>
+                </div>
+            </div> -->
+            <div class="tabs">
+                <ul class="shown_tabs">
+                    <li data-ng-click="loadData('students')" data-context="students"><a
+                            href="#tabOneContent">Students</a></li>
+                    <li data-ng-click="loadData('users')" data-context="users"><a href="#tabTwoContent">Staff</a></li>
+                </ul>
+                <student-list id="tabOneContent"></student-list>
+                <!-- <adobe-user-list id="tabTwoContent"></adobe-user-list>-->
+            </div>
+        </div>
+        ~[wc:admin_footer_css]
+    </body>
+
+</html>

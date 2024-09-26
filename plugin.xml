@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://plugin.powerschool.pearson.com" description="Submitting Licensing" name="CDOL Licensing" version="24.9.0.22"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugin.powerschool.pearson.com plugin.xsd">
+	<publisher name="Adrian Carlson">
+		<contact email="adrian-carlson@cdolinc.net"/>
+	</publisher>
+	<autoinstall required="true">
+		<autoredeploy />
+	</autoinstall>
+	<access_request>
+		<cdn_request>
+			<cdn name="https://cdn.jsdelivr.net" />
+			<cdn name="https://*.jsdelivr.net" />
+		</cdn_request>
+	</access_request>
+</plugin>

@@ -1,0 +1,24 @@
+{
+	"pages": [
+		{
+			"htmlID": "adobe-student-list",
+			"title": "Assign Adobe License to Student",
+			"version": "0",
+			"contextType": "main",
+			"sortOrder": 175,
+			"parentHTMLID": "navPeopleStudentsStudentAccountManagement",
+			"checkParams": true,
+			"pageURL": "/admin/licensing/licensing.html?license_type=adobe&user_type=students"
+		},
+		{
+			"htmlID": "adobe-staff-list",
+			"title": "Assign Adobe License to Staff",
+			"version": "0",
+			"contextType": "main",
+			"parentHTMLID": "navPeopleStaffManagement",
+			"sortOrder": 150,
+			"checkParams": true,
+			"pageURL": "/admin/licensing/licensing.html?license_type=adobe&user_type=users"
+		}
+	]
+}
