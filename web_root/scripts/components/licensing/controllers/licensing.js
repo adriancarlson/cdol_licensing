@@ -7,8 +7,9 @@ define(function (require) {
 		'$attrs',
 		'$filter',
 		'pqService',
+		'psApiService',
 		'formatService',
-		function ($scope, $attrs, $filter, pqService, formatService) {
+		function ($scope, $attrs, $filter, pqService, psApiService, formatService) {
 			$scope.curSchoolId = $attrs.ngCurSchoolId
 			$scope.licenseType = $attrs.ngLicenseType
 			$scope.userType = $attrs.ngUserType
@@ -224,57 +225,38 @@ define(function (require) {
 			}
 
 			$scope.addLicenseToSelected = async () => {
-				loadingDialog()
+				let totalRecs = $scope.selectedAddStudents.length
 				let recordsProcessed = 0
-				let totalFailed = 0 // Initialize totalFailed count
-				let totalRecords = $scope.selectedAddStudents.length
+				let totalFailed = 0
 
-				// Loop through each selected student
-				for (let dcid of $scope.selectedAddStudents) {
-					// Define the payload without 'studentsdcid' for the update case (PUT)
-					let payload = {
-						license_adobe: true
-					}
+				// Function to process each student
+				async function processRecord() {
+					for (let dcid of $scope.selectedAddStudents) {
+						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
 
-					try {
-						// Try to update first (PUT request)
-						let updateRes = await psApiService.psApiCall('student_additional_info', 'PUT', payload, dcid)
+						// Log the current student being processed
+						console.log('Processing student:', dcid)
 
-						// If update fails with 404, attempt to insert (POST request)
-						if (updateRes.response_statuscode !== 200) {
-							if (updateRes.response_statuscode === 404) {
-								// Add 'studentsdcid' only for the insert case (POST)
-								payload['studentsdcid'] = dcid
-
-								// Attempt to insert (POST request)
-								let insertRes = await psApiService.psApiCall('student_additional_info', 'POST', payload)
-
-								if (insertRes.response_statuscode !== 200) {
-									totalFailed++ // Increment failure count if insert fails
-								}
-							} else {
-								totalFailed++ // Increment failure count if update fails
-							}
+						// Simulate an asynchronous operation (e.g., API call) for each student
+						let payload = {
+							license_adobe: true
 						}
-
-						// Update progress with percentage
+						let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, dcid)
+						console.log(updateRes)
+						// Update records processed count
 						recordsProcessed++
-						let pct = Math.round((recordsProcessed / totalRecords) * 100)
-						updateLoadingDialogPercentComplete(pct) // Update loading dialog percentage
-					} catch (error) {
-						totalFailed++ // Increment failure count on unexpected errors
+
+						// Update progress percentage
+						let pct = Math.round((recordsProcessed / totalRecs) * 100)
+						updateLoadingDialogPercentComplete(pct)
 					}
 
-					if (recordsProcessed === totalRecords) {
-						closeLoading()
-						$scope.loadData($scope.userType)
-					}
+					// Close loading dialog once all records are processed
+					closeLoading()
 				}
 
-				// Log the total number of failures
-				if (totalFailed > 0) {
-					console.log(`Total failed operations: ${totalFailed}`)
-				}
+				loadingDialog() // Start the loading dialog
+				await processRecord() // Process all students
 			}
 		}
 	])
