@@ -43,6 +43,7 @@ define(function (require) {
 
 			$scope.loadData = async user_type => {
 				loadingDialog()
+				$scope.studentSpinner = true
 				//only make API call to get the data if
 				if (!$scope.licenseList.hasOwnProperty(user_type)) {
 					//setting up arguments for PQ call
@@ -98,6 +99,7 @@ define(function (require) {
 					}
 				}
 				console.log($scope.selectedAddStudents)
+				$scope.studentSpinner = false
 				$scope.$digest()
 				closeLoading()
 			}
@@ -204,6 +206,7 @@ define(function (require) {
 			}
 
 			$scope.addCollapsedClass = function (id) {
+				$scope.studentSpinner2 = true
 				let headerElement = document.getElementById(id)
 				let divElement = document.getElementById(`${id}Div`)
 				if (headerElement) {
@@ -211,6 +214,12 @@ define(function (require) {
 					headerElement.classList.remove('expanded')
 					divElement.classList.add('concealed')
 				}
+				setTimeout(function () {
+					$scope.$apply(function () {
+						$scope.studentSpinner2 = false // Set spinner to false after 1 second
+					})
+				}, 400)
+				$scope.showAddTable = true
 			}
 			$scope.confirmPopUp = (type, licenseType, userType, count) => {
 				psConfirm({
