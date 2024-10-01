@@ -110,9 +110,18 @@ define(function (require) {
 
 			// grab selected tab reload data and have the selected tab display data
 			$scope.reloadData = () => {
-				$scope.licenseListCounts = []
+				$scope.licenseListCounts = {}
 				$scope.licenseList = {}
+				$scope.curSelectionCounts = {}
+				$scope.curSelection = {}
+				$scope.curSelectionDcids = []
+				$scope.selectedRemoveStudents = []
+				$scope.useHandSelectionRemove = false
+				$scope.selectedAddStudents = []
+				$scope.useHandSelectionAdd = false
+				$scope.showAddTable = false
 				$scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
+				$scope.removeCollapsedClass('header1')
 				$scope.loadData($scope.selectedTab)
 			}
 
@@ -222,6 +231,17 @@ define(function (require) {
 				}, 400)
 				$scope.showAddTable = true
 			}
+
+			$scope.removeCollapsedClass = function (id) {
+				let headerElement = document.getElementById(id)
+				let divElement = document.getElementById(`${id}Div`)
+				if (headerElement) {
+					headerElement.classList.remove('collapsed')
+					headerElement.classList.add('expanded')
+					divElement.classList.remove('concealed')
+				}
+			}
+
 			$scope.confirmPopUp = (type, licenseType, userType, count) => {
 				psConfirm({
 					title: `Confirm ${type} ${$filter('capitalize')(licenseType)} License`,
@@ -282,7 +302,7 @@ define(function (require) {
 							.finally(function () {
 								$scope.removeSuccessMsg()
 								$scope.studentSpinner = false
-								window.location.reload()
+								$scope.reloadData()
 							})
 					})
 				}
@@ -290,7 +310,7 @@ define(function (require) {
 				loadingDialog() // Start the loading dialog
 				await processRecord() // Process all students
 			}
-			var messages = {
+			let messages = {
 				success: [],
 				counter: 0,
 				successMsgHandler: null
