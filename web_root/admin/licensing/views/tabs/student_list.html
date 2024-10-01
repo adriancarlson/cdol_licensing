@@ -1,7 +1,7 @@
-<div id="wait-spinner-div" data-ng-if="studentSpinner" class="m-3">
+<div id="wait-spinner-div" data-ng-show="studentSpinner" class="m-3">
     <div data-pss-wait-spinner="large"></div>
 </div>
-<div data-ng-if="!studentSpinner">
+<div data-ng-show="!studentSpinner">
     <div class="button-row" data-ng-show="!showAddTable">
         <button data-ng-click="addCollapsedClass('header2')" data-ng-disabled="curSelectionCounts.students < 1">Load
             Current
