@@ -6,10 +6,11 @@ define(function (require) {
 		'$scope',
 		'$attrs',
 		'$filter',
+		'$http',
 		'pqService',
 		'psApiService',
 		'formatService',
-		function ($scope, $attrs, $filter, pqService, psApiService, formatService) {
+		function ($scope, $attrs, $filter, $http, pqService, psApiService, formatService) {
 			$scope.curSchoolId = $attrs.ngCurSchoolId
 			$scope.licenseType = $attrs.ngLicenseType
 			$scope.userType = $attrs.ngUserType
@@ -228,12 +229,12 @@ define(function (require) {
 					oktext: 'Submit',
 					canceltext: 'Cancel',
 					ok: function () {
-						$scope.addLicenseToSelected()
+						$scope.addLicenseToSelected(type, licenseType, userType, count)
 					}
 				})
 			}
 
-			$scope.addLicenseToSelected = async () => {
+			$scope.addLicenseToSelected = async (type, licenseType, userType, count) => {
 				let totalRecs = $scope.selectedAddStudents.length
 				let recordsProcessed = 0
 				let totalFailed = 0
@@ -262,10 +263,56 @@ define(function (require) {
 
 					// Close loading dialog once all records are processed
 					closeLoading()
+					$scope.$apply(function () {
+						$scope.studentSpinner = true
+						let addMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully ${type}ed. Updating ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
+						$scope.addSuccessMsg(addMessage)
+						$http({
+							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
+							method: 'GET'
+						})
+							.then(
+								function successCallback(response) {
+									// Handle success response if needed
+								},
+								function errorCallback(response) {
+									// Handle error response if needed
+								}
+							)
+							.finally(function () {
+								$scope.removeSuccessMsg()
+								$scope.studentSpinner = false
+								window.location.reload()
+							})
+					})
 				}
 
 				loadingDialog() // Start the loading dialog
 				await processRecord() // Process all students
+			}
+			var messages = {
+				success: [],
+				counter: 0,
+				successMsgHandler: null
+			}
+			$scope.msgContext = messages
+
+			$scope.addSuccessMsg = function (message) {
+				messages.counter++
+				messages.success.push(message)
+			}
+
+			$scope.removeSuccessMsg = function () {
+				messages.success.splice(0, 1)
+			}
+
+			$scope.getSuccessMessages = function () {
+				return messages.success
+			}
+
+			$scope.addTimedSuccessMsg = function (message) {
+				messages.counter++
+				messages.successMsgHandler.addSuccessMessage(message)
 			}
 		}
 	])
