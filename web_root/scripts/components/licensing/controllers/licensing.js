@@ -214,9 +214,9 @@ define(function (require) {
 			}
 			$scope.confirmPopUp = (type, licenseType, userType, count) => {
 				psConfirm({
-					title: `Confirm ${type}`,
-					message: `Please confirm you want to ${type} ${$filter('capitalize')(licenseType)} License${count > 1 ? 's' : ''} to the selected ${count} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''}.`,
-					oktext: 'Confirm',
+					title: `Confirm ${type} ${$filter('capitalize')(licenseType)} License`,
+					message: `<div style="padding: 5px;"><div style="margin-left:20px;">	Please confirm you want to ${type} ${$filter('capitalize')(licenseType)} License${count > 1 ? 's' : ''} to the selected ${count} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''}</div><div class="feedback-alert">This process may require up to 24 hours for the Adobe License to apply.</div></div>`,
+					oktext: 'Submit',
 					canceltext: 'Cancel',
 					ok: function () {
 						$scope.addLicenseToSelected()
@@ -239,7 +239,7 @@ define(function (require) {
 
 						// Simulate an asynchronous operation (e.g., API call) for each student
 						let payload = {
-							license_adobe: true
+							license_adobe: formatService.formatChecksForApi(true)
 						}
 						let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, dcid)
 						console.log(updateRes)

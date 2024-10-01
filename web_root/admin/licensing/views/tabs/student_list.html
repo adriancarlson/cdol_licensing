@@ -1,6 +1,7 @@
 <div class="button-row" data-ng-show="!showAddTable">
-    <button data-ng-click="showAddTable = true;addCollapsedClass('header2')">Load Current
-        Currently Selected {{userType | capitalize }}</button>
+    <button data-ng-click="showAddTable = true;addCollapsedClass('header2')"
+        data-ng-disabled="curSelectionCounts.students < 1">Load Current
+        Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
 </div>
 <h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add {{licenseType |
     capitalize }} Licenses to Currently Selected {{userType | capitalize }}</h2>
@@ -15,8 +16,7 @@
                     Hand</button>
                 <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd()"
                     class="dark-orange">Cancel Select By Hand</button>
-                <button
-                    data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudents.length)"
+                <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudents.length)"
                     data-ng-disabled="selectedAddStudents.length < 1">Add
                     License to Selected
                     ({{selectedAddStudents.length}})</button>
@@ -33,7 +33,7 @@
                             data-ng-click="selectToAddAll($event)">
                     </th>
                     <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
-                    <th data-pss-sort-fields="lastfirst" class="nowrap">Student Name</th>
+                    <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name</th>
                     <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
                     <th data-pss-sort-fields="license_adobe">Adobe License</th>
                     <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
@@ -89,7 +89,7 @@
                     <th data-ng-show="useHandSelectionRemove"><input id="checkAllRemove" type="checkbox"
                             data-ng-click="selectToRemoveAll($event)"></th>
                     <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
-                    <th data-pss-sort-fields="lastfirst" class="nowrap">Student Name</th>
+                    <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name</th>
                     <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
                     <th data-pss-sort-fields="license_adobe">Adobe License</th>
                     <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
