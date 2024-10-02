@@ -232,24 +232,29 @@ define(function (require) {
 					oktext: 'Submit',
 					canceltext: 'Cancel',
 					ok: function () {
-						if (type === 'Add') {
-							$scope.addLicenseToSelected(type, licenseType, userType, count)
-						} else if (type === 'Remove') {
-							$scope.removeLicenseFromSelected(type, licenseType, userType, count)
-						}
+						$scope.processLicenseForSelected(type, licenseType, userType, count)
 					}
 				})
 			}
 
-			$scope.addLicenseToSelected = async (type, licenseType, userType, count) => {
-				let totalRecs = $scope.selectedAddStudentsDcids.length
+			$scope.processLicenseForSelected = async (type, licenseType, userType, count) => {
+				// Use template literals to dynamically select the correct properties
+				let dcidKey = `selected${type}StudentsDcids`
+				let studentListKey = type === 'Add' ? `selected${type}Students` : `licenseList[userType]`
+
+				let selectedStudentsDcids = $scope[dcidKey]
+				let filteredStudents = type === 'Add' ? $scope[studentListKey].filter(student => selectedStudentsDcids.includes(student.dcid)) : $scope.licenseList[userType].filter(student => selectedStudentsDcids.includes(student.dcid))
+
+				let totalRecs = selectedStudentsDcids.length
 				let recordsProcessed = 0
 				let totalSkipped = 0
 				let totalUpdated = 0
 				let totalFailed = 0
 
-				// Filter out selected students based on dcid
-				let filteredStudents = $scope.selectedAddStudents.filter(student => $scope.selectedAddStudentsDcids.includes(student.dcid))
+				// Determine the payload and condition based on the type (add/remove)
+				const licenseCheck = type === 'Add' ? '1' : '0' // Check for license existence (add: 1, remove: 0)
+				const formatCheckValue = type === 'Add' ? true : false // Format check value for API
+				const actionVerb = type === 'Add' ? 'updated' : 'removed' // Used in messages
 
 				// Function to process each student
 				async function processRecord() {
@@ -259,11 +264,10 @@ define(function (require) {
 						// Log the current student being processed
 						console.log('Processing student:', student.dcid)
 
-						// Check if student does not have license_adobe or it is not equal to 1
-						if (!student.license_adobe || student.license_adobe !== '1') {
-							// Only update if the condition is met
+						// Check if the student needs an update based on the type
+						if ((type === 'Add' && (!student.license_adobe || student.license_adobe !== '1')) || (type === 'Remove' && student.license_adobe && student.license_adobe !== '0')) {
 							let payload = {
-								license_adobe: formatService.formatChecksForApi(true)
+								license_adobe: formatService.formatChecksForApi(formatCheckValue)
 							}
 							let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, student.dcid)
 							console.log(updateRes)
@@ -292,113 +296,19 @@ define(function (require) {
 						$scope.studentSpinner = true
 
 						// Construct the success message
-						let addMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
-
-						// Conditionally add updated, skipped, and failed counts to the message if they are greater than 0
+						let message = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
 						if (totalUpdated > 0) {
-							addMessage += ` Total updated: ${totalUpdated}.`
+							message += ` Total ${actionVerb}: ${totalUpdated}.`
 						}
 						if (totalSkipped > 0) {
-							addMessage += ` Total skipped: ${totalSkipped}.`
+							message += ` Total skipped: ${totalSkipped}.`
 						}
 						if (totalFailed > 0) {
-							addMessage += ` Total failed: ${totalFailed}.`
+							message += ` Total failed: ${totalFailed}.`
 						}
 
-						addMessage += ` Updating ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
-						$scope.addSuccessMsg(addMessage)
-
-						$http({
-							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
-							method: 'GET'
-						})
-							.then(
-								function successCallback(response) {
-									// Handle success response if needed
-								},
-								function errorCallback(response) {
-									// Handle error response if needed
-								}
-							)
-							.finally(function () {
-								$scope.loadData($scope.userType)
-								$scope.removeCollapsedClass('header2')
-								$scope.removeSuccessMsg()
-								$scope.studentSpinner = false
-							})
-					})
-				}
-
-				loadingDialog() // Start the loading dialog
-				await processRecord() // Process all students
-			}
-
-			$scope.removeLicenseFromSelected = async (type, licenseType, userType, count) => {
-				let totalRecs = $scope.selectedRemoveStudentsDcids.length
-				let recordsProcessed = 0
-				let totalSkipped = 0
-				let totalUpdated = 0
-				let totalFailed = 0
-
-				// Filter out selected students based on dcid
-				let filteredStudents = $scope.licenseList[userType].filter(student => $scope.selectedRemoveStudentsDcids.includes(student.dcid))
-
-				// Function to process each student
-				async function processRecord() {
-					for (let student of filteredStudents) {
-						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
-
-						// Log the current student being processed
-						console.log('Processing student:', student.dcid)
-
-						// Check if student does not have license_adobe or it is not equal to 1
-						if (student.license_adobe || student.license_adobe !== '0') {
-							// Only update if the condition is met
-							let payload = {
-								license_adobe: formatService.formatChecksForApi(false)
-							}
-							let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, student.dcid)
-							console.log(updateRes)
-
-							// Increment totalUpdated or totalFailed based on the response status code
-							if (updateRes.response_statuscode === 200) {
-								totalUpdated++
-							} else {
-								totalFailed++
-							}
-						} else {
-							totalSkipped++
-						}
-
-						// Update records processed count
-						recordsProcessed++
-
-						// Update progress percentage
-						let pct = Math.round((recordsProcessed / totalRecs) * 100)
-						updateLoadingDialogPercentComplete(pct)
-					}
-
-					// Close loading dialog once all records are processed
-					closeLoading()
-					$scope.$apply(function () {
-						$scope.studentSpinner = true
-
-						// Construct the success message
-						let removeMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
-
-						// Conditionally add updated, skipped, and failed counts to the message if they are greater than 0
-						if (totalUpdated > 0) {
-							removeMessage += ` Total removed: ${totalUpdated}.`
-						}
-						if (totalSkipped > 0) {
-							removeMessage += ` Total skipped: ${totalSkipped}.`
-						}
-						if (totalFailed > 0) {
-							removeMessage += ` Total failed: ${totalFailed}.`
-						}
-
-						removeMessage += ` Removing from ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
-						$scope.addSuccessMsg(removeMessage)
+						message += ` ${type === 'Add' ? 'Updating' : 'Removing from'} ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
+						$scope.addSuccessMsg(message)
 
 						$http({
 							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
@@ -427,13 +337,11 @@ define(function (require) {
 
 			let messages = {
 				success: [],
-				counter: 0,
 				successMsgHandler: null
 			}
 			$scope.msgContext = messages
 
 			$scope.addSuccessMsg = function (message) {
-				messages.counter++
 				messages.success.push(message)
 			}
 
@@ -446,7 +354,6 @@ define(function (require) {
 			}
 
 			$scope.addTimedSuccessMsg = function (message) {
-				messages.counter++
 				messages.successMsgHandler.addSuccessMessage(message)
 			}
 		}
