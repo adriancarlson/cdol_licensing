@@ -1,148 +1,150 @@
 <div data-ng-show="!studentSpinner"></div>
-    <div class="button-row" data-ng-show="!showAddTable">
-        <button data-ng-click="addCollapsedClass('header2')" data-ng-disabled="curSelectionCounts.students < 1">Load
-            Current
-            Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
-    </div>
-    <h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add {{licenseType |
-        capitalize }} Licenses to Currently Selected {{userType | capitalize }}</h2>
-    <div id="wait-spinner-div2" data-ng-if="studentSpinner2" class="p-4 m-3">
-        <div data-pss-wait-spinner="medium"></div>
-    </div>
-    <div data-ng-hide="!showAddTable">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
-                            data-ng-hide="!useHandSelectionAdd">Selected:
-                            {{selectedAddStudentsDcids.length}}</span></strong>
-                </div>
-                <div class="col-auto me-2">
-                    <button data-ng-hide="useHandSelectionAdd" data-ng-click="useHandSelectionAdd = true">Select By
-                        Hand</button>
-                    <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd()"
-                        class="dark-orange">Cancel Select By Hand</button>
-                    <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudentsDcids.length)"
-                        data-ng-disabled="selectedAddStudentsDcids.length < 1">Add
-                        License to Selected
-                        ({{selectedAddStudentsDcids.length}})</button>
-                </div>
+<div class="button-row" data-ng-show="!showAddTable">
+    <button data-ng-click="addCollapsedClass('header2')" data-ng-disabled="curSelectionCounts.students < 1">Load
+        Current
+        Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
+</div>
+<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add {{licenseType |
+    capitalize }} Licenses to Currently Selected {{userType | capitalize }}</h2>
+<div id="wait-spinner-div2" data-ng-if="studentSpinner2" class="p-4 m-3">
+    <div data-pss-wait-spinner="medium"></div>
+</div>
+<div data-ng-hide="!showAddTable">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
+                        data-ng-hide="!useHandSelectionAdd">Selected:
+                        {{selectedAddStudentsDcids.length}}</span></strong>
+            </div>
+            <div class="col-auto me-2">
+                <button data-ng-hide="useHandSelectionAdd" data-ng-click="useHandSelectionAdd = true">Select By
+                    Hand</button>
+                <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd()"
+                    class="dark-orange">Cancel Select By Hand</button>
+                <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudentsDcids.length)"
+                    data-ng-disabled="selectedAddStudentsDcids.length < 1">Add
+                    License to Selected
+                    ({{selectedAddStudentsDcids.length}})</button>
             </div>
         </div>
-        <div id="license-student-add-grid" data-pss-grid-widget data-data="curSelection.students"
-            data-filtered-data="filteredlicenseStudentAddList" data-filter-constraint="no-filters">
-            <table class="grid">
-                <thead class="sticky-header">
-                    <tr>
-                        <th data-ng-show="useHandSelectionAdd">
-                            <input id="checkAllAdd" type="checkbox" data-ng-model="selectAllAddChecked"
-                                data-ng-click="selectToAddAll($event)">
-                        </th>
-                        <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
-                        <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
-                        </th>
-                        <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
-                        <th data-pss-sort-fields="license_adobe">Adobe License</th>
-                        <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
-                        <th data-pss-sort-fields="school_abbr" data-ng-if="curSchoolId == 0">School</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-ng-repeat="student in filteredlicenseStudentAddList">
-                        <td data-ng-show="useHandSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
-                                data-ng-model="student.selectToAdd"
-                                data-ng-change="toggleAddSelection(student.dcid, student.selectToAdd)"></td>
-                        <td class="nowrap"><a
-                                href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
-                        </td>
-                        <td class="nowrap">{{student.lastfirst}}</td>
-                        <td class="nowrap">{{student.email_addr}}</td>
-                        <td><span
-                                data-ng-class="{'mark-complete': student.license_adobe, 'mark-incomplete': !student.license_adobe}"></span>
-                        </td>
-                        <td class="nowrap">
-                            <span ng-if="student.license_adobe == 1 && !student.license_adobe_group"
-                                class="text-center"><pds-icon name="inprogress-alt"
-                                    class="style-scope x-scope pds-icon-0 pds-widget d-inline-block text-center text-primary"
-                                    pds-widget="pds-widget" style="zoom: 0.7;"></pds-icon>
-                                In Progress ...
-                            </span>
-                            <span ng-if="!(student.license_adobe == 1 && !student.license_adobe_group)">
-                                {{student.license_adobe_group}}
-                            </span>
-                        </td>
-                        <td data-ng-if="curSchoolId == 0">{{student.school_abbr}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
-    <h2 id="header2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with {{licenseType
-        |
-        capitalize }} Licenses</h2>
-    <div id="header2Div">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
-                            data-ng-hide="!useHandSelectionRemove">Selected:
-                            {{selectedRemoveStudents.length}}</span></strong>
-                </div>
-                <div class="col-auto me-2">
-                    <button data-ng-hide="useHandSelectionRemove"
-                        data-ng-click="useHandSelectionRemove = true; selectedRemoveStudents = []">Select By
-                        Hand</button>
-                    <button data-ng-hide="!useHandSelectionRemove" data-ng-click="cancelHandSelectionRemove()"
-                        class="dark-orange">Cancel Select By Hand</button>
-                    <button data-ng-click="removeLicenseFromSelected()"
-                        data-ng-disabled="selectedRemoveStudents.length < 1">Remove
-                        License from Selected
-                        ({{selectedRemoveStudents.length}})</button>
-                </div>
+    <div id="license-student-add-grid" data-pss-grid-widget data-data="curSelection.students"
+        data-filtered-data="filteredlicenseStudentAddList" data-filter-constraint="no-filters">
+        <table class="grid">
+            <thead class="sticky-header">
+                <tr>
+                    <th data-ng-show="useHandSelectionAdd">
+                        <input id="checkAllAdd" type="checkbox" data-ng-model="selectAllAddChecked"
+                            data-ng-click="selectToAddAll($event)">
+                    </th>
+                    <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
+                    <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
+                    </th>
+                    <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
+                    <th data-pss-sort-fields="license_adobe">Adobe License</th>
+                    <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
+                    <th data-pss-sort-fields="school_abbr" data-ng-if="curSchoolId == 0">School</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="student in filteredlicenseStudentAddList">
+                    <td data-ng-show="useHandSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
+                            data-ng-model="student.selectToAdd"
+                            data-ng-change="toggleAddSelection(student.dcid, student.selectToAdd)"></td>
+                    <td class="nowrap"><a
+                            href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
+                    </td>
+                    <td class="nowrap">{{student.lastfirst}}</td>
+                    <td class="nowrap">{{student.email_addr}}</td>
+                    <td>
+                        <span
+                            data-ng-class="{'mark-complete': student.license_adobe == '1', 'mark-incomplete': student.license_adobe != '1'}"></span>
+                    </td>
+                    <td class="nowrap">
+                        <span ng-if="student.license_adobe == 1 && !student.license_adobe_group"
+                            class="text-center"><pds-icon name="inprogress-alt"
+                                class="style-scope x-scope pds-icon-0 pds-widget d-inline-block text-center text-primary"
+                                pds-widget="pds-widget" style="zoom: 0.7;"></pds-icon>
+                            In Progress ...
+                        </span>
+                        <span ng-if="!(student.license_adobe == 1 && !student.license_adobe_group)">
+                            {{student.license_adobe_group}}
+                        </span>
+                    </td>
+                    <td data-ng-if="curSchoolId == 0">{{student.school_abbr}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<h2 id="header2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with {{licenseType
+    |
+    capitalize }} Licenses</h2>
+<div id="header2Div">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
+                        data-ng-hide="!useHandSelectionRemove">Selected:
+                        {{selectedRemoveStudents.length}}</span></strong>
+            </div>
+            <div class="col-auto me-2">
+                <button data-ng-hide="useHandSelectionRemove"
+                    data-ng-click="useHandSelectionRemove = true; selectedRemoveStudents = []">Select By
+                    Hand</button>
+                <button data-ng-hide="!useHandSelectionRemove" data-ng-click="cancelHandSelectionRemove()"
+                    class="dark-orange">Cancel Select By Hand</button>
+                <button data-ng-click="removeLicenseFromSelected()"
+                    data-ng-disabled="selectedRemoveStudents.length < 1">Remove
+                    License from Selected
+                    ({{selectedRemoveStudents.length}})</button>
             </div>
         </div>
-        <div id="license-student-grid" data-pss-grid-widget data-data="licenseList.students"
-            data-filtered-data="filteredlicenseStudentList" data-filter-constraint="no-filters">
-            <table class="grid">
-                <thead class="sticky-header">
-                    <tr>
-                        <th data-ng-show="useHandSelectionRemove"><input id="checkAllRemove" type="checkbox"
-                                data-ng-click="selectToRemoveAll($event)"></th>
-                        <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
-                        <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
-                        </th>
-                        <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
-                        <th data-pss-sort-fields="license_adobe">Adobe License</th>
-                        <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
-                        <th data-pss-sort-fields="school_abbr" data-ng-if="curSchoolId == 0">School</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-ng-repeat="student in filteredlicenseStudentList">
-                        <td data-ng-show="useHandSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
-                                data-ng-model="student.selectToRemove"
-                                data-ng-change="toggleRemoveSelection(student.dcid, student.selectToRemove)"></td>
-                        <td class="nowrap"><a
-                                href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
-                        </td>
-                        <td class="nowrap">{{student.lastfirst}}</td>
-                        <td class="nowrap">{{student.email_addr}}</td>
-                        <td><span
-                                data-ng-class="{'mark-complete': student.license_adobe, 'mark-incomplete': !student.license_adobe}"></span>
-                        </td>
-                        <td class="nowrap">
-                            <span ng-if="student.license_adobe == 1 && !student.license_adobe_group"
-                                class="text-center"><pds-icon name="inprogress-alt"
-                                    class="style-scope x-scope pds-icon-0 pds-widget d-inline-block text-center text-primary"
-                                    pds-widget="pds-widget" style="zoom: 0.7;"></pds-icon>
-                                In Progress ...
-                            </span>
-                            <span ng-if="!(student.license_adobe == 1 && !student.license_adobe_group)">
-                                {{student.license_adobe_group}}
-                            </span>
-                        </td>
-                        <td data-ng-if="curSchoolId == 0">{{student.school_abbr}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
+    <div id="license-student-grid" data-pss-grid-widget data-data="licenseList.students"
+        data-filtered-data="filteredlicenseStudentList" data-filter-constraint="no-filters">
+        <table class="grid">
+            <thead class="sticky-header">
+                <tr>
+                    <th data-ng-show="useHandSelectionRemove"><input id="checkAllRemove" type="checkbox"
+                            data-ng-click="selectToRemoveAll($event)"></th>
+                    <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
+                    <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
+                    </th>
+                    <th data-pss-sort-fields="email_addr" class="nowrap">Email</th>
+                    <th data-pss-sort-fields="license_adobe">Adobe License</th>
+                    <th data-pss-sort-fields="license_adobe_group" class="nowrap">Adobe License Group</th>
+                    <th data-pss-sort-fields="school_abbr" data-ng-if="curSchoolId == 0">School</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="student in filteredlicenseStudentList">
+                    <td data-ng-show="useHandSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
+                            data-ng-model="student.selectToRemove"
+                            data-ng-change="toggleRemoveSelection(student.dcid, student.selectToRemove)"></td>
+                    <td class="nowrap"><a
+                            href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
+                    </td>
+                    <td class="nowrap">{{student.lastfirst}}</td>
+                    <td class="nowrap">{{student.email_addr}}</td>
+                    <td>
+                        <span
+                            data-ng-class="{'mark-complete': student.license_adobe == '1', 'mark-incomplete': student.license_adobe != '1'}"></span>
+                    </td>
+                    <td class="nowrap">
+                        <span ng-if="student.license_adobe == 1 && !student.license_adobe_group"
+                            class="text-center"><pds-icon name="inprogress-alt"
+                                class="style-scope x-scope pds-icon-0 pds-widget d-inline-block text-center text-primary"
+                                pds-widget="pds-widget" style="zoom: 0.7;"></pds-icon>
+                            In Progress ...
+                        </span>
+                        <span ng-if="!(student.license_adobe == 1 && !student.license_adobe_group)">
+                            {{student.license_adobe_group}}
+                        </span>
+                    </td>
+                    <td data-ng-if="curSchoolId == 0">{{student.school_abbr}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>

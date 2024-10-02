@@ -15,17 +15,6 @@ define(function (require) {
 			$scope.licenseType = $attrs.ngLicenseType
 			$scope.userType = $attrs.ngUserType
 			// $scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
-			$scope.licenseListCounts = {}
-			$scope.licenseList = {}
-			$scope.curSelectionCounts = {}
-			$scope.curSelection = {}
-			$scope.curSelectionDcids = []
-			$scope.selectedRemoveStudents = []
-			$scope.useHandSelectionRemove = false
-			$scope.selectedAddStudents = []
-			$scope.selectedAddStudentsDcids = []
-			$scope.useHandSelectionAdd = false
-			$scope.showAddTable = false
 
 			// Step 1: Find the element matching $scope.userType
 			$scope.selectedTab = document.querySelector(`[data-context="${$scope.userType}"]`)
@@ -44,8 +33,21 @@ define(function (require) {
 			document.title = `${$filter('capitalize')($scope.licenseType)} Licensing`
 
 			$scope.loadData = async user_type => {
+				console.log('running Load Data')
 				loadingDialog()
 				$scope.studentSpinner = true
+				$scope.licenseListCounts = {}
+				$scope.licenseList = {}
+				$scope.curSelectionCounts = {}
+				$scope.curSelection = {}
+				$scope.curSelectionDcids = []
+				$scope.selectedRemoveStudents = []
+				$scope.useHandSelectionRemove = false
+				$scope.selectedAddStudents = []
+				$scope.selectedAddStudentsDcids = []
+				$scope.useHandSelectionAdd = false
+				$scope.showAddTable = false
+
 				//setting up arguments for PQ call
 				const pqData = { schoolID: $scope.curSchoolId }
 
@@ -81,7 +83,6 @@ define(function (require) {
 
 				// getting current selection
 				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData, true)
-				console.log(curSelectRes)
 				if (curSelectRes.length > 0) {
 					$scope.curSelection[user_type] = curSelectRes
 					$scope.curSelectionCounts[user_type] = $scope.curSelection[user_type].length
@@ -99,8 +100,6 @@ define(function (require) {
 					$scope.curSelection[user_type] = {}
 					$scope.curSelectionCounts[user_type] = 0
 				}
-				console.log('$scope.selectedAddStudentsDcids', $scope.selectedAddStudentsDcids)
-				console.log('$scope.selectedAddStudents', $scope.selectedAddStudents)
 				$scope.studentSpinner = false
 				$scope.$digest()
 				closeLoading()
@@ -109,23 +108,6 @@ define(function (require) {
 			// fire the function to load the data
 			$scope.loadData($scope.userType)
 
-			// grab selected tab reload data and have the selected tab display data
-			$scope.reloadData = () => {
-				$scope.licenseListCounts = {}
-				$scope.licenseList = {}
-				$scope.curSelectionCounts = {}
-				$scope.curSelection = {}
-				$scope.curSelectionDcids = []
-				$scope.selectedRemoveStudents = []
-				$scope.useHandSelectionRemove = false
-				$scope.selectedAddStudents = []
-				$scope.selectedAddStudentsDcids = []
-				$scope.useHandSelectionAdd = false
-				$scope.showAddTable = false
-				$scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
-				$scope.removeCollapsedClass('header1')
-				$scope.loadData($scope.userType)
-			}
 
 			$scope.toggleRemoveSelection = (dcid, isSelected) => {
 				const index = $scope.selectedRemoveStudents.indexOf(dcid)
@@ -336,6 +318,8 @@ define(function (require) {
 								}
 							)
 							.finally(function () {
+								$scope.loadData($scope.userType)
+								$scope.removeCollapsedClass('header2')
 								$scope.removeSuccessMsg()
 								$scope.studentSpinner = false
 							})
