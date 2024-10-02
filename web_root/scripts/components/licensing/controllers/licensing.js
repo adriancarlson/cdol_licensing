@@ -22,7 +22,7 @@ define(function (require) {
 			$scope.curSelectionDcids = []
 			$scope.selectedRemoveStudents = []
 			$scope.useHandSelectionRemove = false
-			$scope.selectedAddStudents = []
+			$scope.selectedAddStudentsDcids = []
 			$scope.useHandSelectionAdd = false
 			$scope.showAddTable = false
 
@@ -86,11 +86,11 @@ define(function (require) {
 					if (curSelectRes.length > 0) {
 						$scope.curSelection[user_type] = curSelectRes
 						$scope.curSelectionCounts[user_type] = $scope.curSelection[user_type].length
-						$scope.selectedAddStudents = []
+						$scope.selectedAddStudentsDcids = []
 						$scope.curSelectionDcids = []
 						angular.forEach($scope.curSelection[user_type], function (student) {
 							student.selectToAdd = true
-							$scope.selectedAddStudents.push(student.dcid)
+							$scope.selectedAddStudentsDcids.push(student.dcid)
 							$scope.curSelectionDcids.push(student.dcid)
 							$scope.selectAllAddChecked = true
 						})
@@ -99,7 +99,7 @@ define(function (require) {
 						$scope.curSelectionCounts[user_type] = 0
 					}
 				}
-				console.log($scope.selectedAddStudents)
+				console.log($scope.selectedAddStudentsDcids)
 				$scope.studentSpinner = false
 				$scope.$digest()
 				closeLoading()
@@ -117,7 +117,7 @@ define(function (require) {
 				$scope.curSelectionDcids = []
 				$scope.selectedRemoveStudents = []
 				$scope.useHandSelectionRemove = false
-				$scope.selectedAddStudents = []
+				$scope.selectedAddStudentsDcids = []
 				$scope.useHandSelectionAdd = false
 				$scope.showAddTable = false
 				$scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
@@ -166,15 +166,15 @@ define(function (require) {
 			}
 
 			$scope.toggleAddSelection = (dcid, isSelected) => {
-				// Update the selectedAddStudents list based on individual selection
+				// Update the selectedAddStudentsDcids list based on individual selection
 				if (isSelected) {
 					// Add to selected if it's checked
-					if (!$scope.selectedAddStudents.includes(dcid)) {
-						$scope.selectedAddStudents.push(dcid)
+					if (!$scope.selectedAddStudentsDcids.includes(dcid)) {
+						$scope.selectedAddStudentsDcids.push(dcid)
 					}
 				} else {
 					// Remove from selected if it's unchecked
-					$scope.selectedAddStudents = $scope.selectedAddStudents.filter(id => id !== dcid)
+					$scope.selectedAddStudentsDcids = $scope.selectedAddStudentsDcids.filter(id => id !== dcid)
 				}
 
 				// Check if any checkbox is unchecked
@@ -189,20 +189,20 @@ define(function (require) {
 				// Set all individual checkboxes based on "Select All" checkbox state
 				angular.forEach($scope.filteredlicenseStudentAddList, student => {
 					student.selectToAdd = isChecked // Check or uncheck each individual checkbox
-					// Update selectedAddStudents accordingly
+					// Update selectedAddStudentsDcids accordingly
 					if (isChecked) {
-						if (!$scope.selectedAddStudents.includes(student.dcid)) {
-							$scope.selectedAddStudents.push(student.dcid)
+						if (!$scope.selectedAddStudentsDcids.includes(student.dcid)) {
+							$scope.selectedAddStudentsDcids.push(student.dcid)
 						}
 					} else {
-						$scope.selectedAddStudents = $scope.selectedAddStudents.filter(id => id !== student.dcid)
+						$scope.selectedAddStudentsDcids = $scope.selectedAddStudentsDcids.filter(id => id !== student.dcid)
 					}
 				})
 			}
 
 			$scope.cancelHandSelectionAdd = () => {
 				$scope.useHandSelectionAdd = false
-				$scope.selectedAddStudents = $scope.curSelectionDcids
+				$scope.selectedAddStudentsDcids = $scope.curSelectionDcids
 
 				angular.forEach($scope.filteredlicenseStudentAddList, function (student) {
 					student.selectToAdd = true // Deselect all students
@@ -255,13 +255,13 @@ define(function (require) {
 			}
 
 			$scope.addLicenseToSelected = async (type, licenseType, userType, count) => {
-				let totalRecs = $scope.selectedAddStudents.length
+				let totalRecs = $scope.selectedAddStudentsDcids.length
 				let recordsProcessed = 0
 				let totalFailed = 0
 
 				// Function to process each student
 				async function processRecord() {
-					for (let dcid of $scope.selectedAddStudents) {
+					for (let dcid of $scope.selectedAddStudentsDcids) {
 						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
 
 						// Log the current student being processed

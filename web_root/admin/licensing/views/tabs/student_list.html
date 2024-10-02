@@ -18,17 +18,18 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
-                            data-ng-hide="!useHandSelectionAdd">Selected: {{selectedAddStudents.length}}</span></strong>
+                            data-ng-hide="!useHandSelectionAdd">Selected:
+                            {{selectedAddStudentsDcids.length}}</span></strong>
                 </div>
                 <div class="col-auto me-2">
                     <button data-ng-hide="useHandSelectionAdd" data-ng-click="useHandSelectionAdd = true">Select By
                         Hand</button>
                     <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd()"
                         class="dark-orange">Cancel Select By Hand</button>
-                    <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudents.length)"
-                        data-ng-disabled="selectedAddStudents.length < 1">Add
+                    <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudentsDcids.length)"
+                        data-ng-disabled="selectedAddStudentsDcids.length < 1">Add
                         License to Selected
-                        ({{selectedAddStudents.length}})</button>
+                        ({{selectedAddStudentsDcids.length}})</button>
                 </div>
             </div>
         </div>
