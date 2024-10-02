@@ -22,6 +22,7 @@ define(function (require) {
 			$scope.curSelectionDcids = []
 			$scope.selectedRemoveStudents = []
 			$scope.useHandSelectionRemove = false
+			$scope.selectedAddStudents = []
 			$scope.selectedAddStudentsDcids = []
 			$scope.useHandSelectionAdd = false
 			$scope.showAddTable = false
@@ -45,61 +46,61 @@ define(function (require) {
 			$scope.loadData = async user_type => {
 				loadingDialog()
 				$scope.studentSpinner = true
-				//only make API call to get the data if
-				if (!$scope.licenseList.hasOwnProperty(user_type)) {
-					//setting up arguments for PQ call
-					const pqData = { schoolID: $scope.curSchoolId }
+				//setting up arguments for PQ call
+				const pqData = { schoolID: $scope.curSchoolId }
 
-					//setting up function to add key and value staff list to licenseList object
-					const updatelicenseList = (key, value) => {
-						// Check if licenseType is 'adobe'
-						if ($scope.licenseType === 'adobe') {
-							// Filter items where license_adobe == '1'
-							$scope.licenseList[key] = value.filter(item => item.license_adobe == '1')
-						} else {
-							// Otherwise, assign the value as-is
-							$scope.licenseList[key] = value
-						}
-					}
-
-					// getting existing students with license
-					let res = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData)
-
-					//updating licenseList obj
-					if (res.length > 0) {
-						updatelicenseList(user_type, res)
-					} else {
-						$scope.licenseList[user_type] = {}
-					}
-					// Calculate the number of records where license_adobe == '1'
-					$scope.licenseListCounts = $scope.licenseListCounts || {}
+				//setting up function to add key and value staff list to licenseList object
+				const updatelicenseList = (key, value) => {
+					// Check if licenseType is 'adobe'
 					if ($scope.licenseType === 'adobe') {
-						$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].filter(item => item.license_adobe == '1').length
+						// Filter items where license_adobe == '1'
+						$scope.licenseList[key] = value.filter(item => item.license_adobe == '1')
 					} else {
 						// Otherwise, assign the value as-is
-						$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].length
-					}
-
-					// getting current selection
-					let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData, true)
-					console.log(curSelectRes)
-					if (curSelectRes.length > 0) {
-						$scope.curSelection[user_type] = curSelectRes
-						$scope.curSelectionCounts[user_type] = $scope.curSelection[user_type].length
-						$scope.selectedAddStudentsDcids = []
-						$scope.curSelectionDcids = []
-						angular.forEach($scope.curSelection[user_type], function (student) {
-							student.selectToAdd = true
-							$scope.selectedAddStudentsDcids.push(student.dcid)
-							$scope.curSelectionDcids.push(student.dcid)
-							$scope.selectAllAddChecked = true
-						})
-					} else {
-						$scope.curSelection[user_type] = {}
-						$scope.curSelectionCounts[user_type] = 0
+						$scope.licenseList[key] = value
 					}
 				}
-				console.log($scope.selectedAddStudentsDcids)
+
+				// getting existing students with license
+				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData)
+
+				//updating licenseList obj
+				if (res.length > 0) {
+					updatelicenseList(user_type, res)
+				} else {
+					$scope.licenseList[user_type] = {}
+				}
+				// Calculate the number of records where license_adobe == '1'
+				$scope.licenseListCounts = $scope.licenseListCounts || {}
+				if ($scope.licenseType === 'adobe') {
+					$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].filter(item => item.license_adobe == '1').length
+				} else {
+					// Otherwise, assign the value as-is
+					$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].length
+				}
+
+				// getting current selection
+				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData, true)
+				console.log(curSelectRes)
+				if (curSelectRes.length > 0) {
+					$scope.curSelection[user_type] = curSelectRes
+					$scope.curSelectionCounts[user_type] = $scope.curSelection[user_type].length
+					$scope.selectedAddStudents = []
+					$scope.selectedAddStudentsDcids = []
+					$scope.curSelectionDcids = []
+					angular.forEach($scope.curSelection[user_type], function (student) {
+						student.selectToAdd = true
+						$scope.selectedAddStudents.push(student)
+						$scope.selectedAddStudentsDcids.push(student.dcid)
+						$scope.curSelectionDcids.push(student.dcid)
+						$scope.selectAllAddChecked = true
+					})
+				} else {
+					$scope.curSelection[user_type] = {}
+					$scope.curSelectionCounts[user_type] = 0
+				}
+				console.log('$scope.selectedAddStudentsDcids', $scope.selectedAddStudentsDcids)
+				console.log('$scope.selectedAddStudents', $scope.selectedAddStudents)
 				$scope.studentSpinner = false
 				$scope.$digest()
 				closeLoading()
@@ -117,12 +118,13 @@ define(function (require) {
 				$scope.curSelectionDcids = []
 				$scope.selectedRemoveStudents = []
 				$scope.useHandSelectionRemove = false
+				$scope.selectedAddStudents = []
 				$scope.selectedAddStudentsDcids = []
 				$scope.useHandSelectionAdd = false
 				$scope.showAddTable = false
 				$scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
 				$scope.removeCollapsedClass('header1')
-				$scope.loadData($scope.selectedTab)
+				$scope.loadData($scope.userType)
 			}
 
 			$scope.toggleRemoveSelection = (dcid, isSelected) => {
@@ -257,22 +259,40 @@ define(function (require) {
 			$scope.addLicenseToSelected = async (type, licenseType, userType, count) => {
 				let totalRecs = $scope.selectedAddStudentsDcids.length
 				let recordsProcessed = 0
+				let totalSkipped = 0
+				let totalUpdated = 0
 				let totalFailed = 0
+
+				// Filter out selected students based on dcid
+				let filteredStudents = $scope.selectedAddStudents.filter(student => $scope.selectedAddStudentsDcids.includes(student.dcid))
 
 				// Function to process each student
 				async function processRecord() {
-					for (let dcid of $scope.selectedAddStudentsDcids) {
+					for (let student of filteredStudents) {
 						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
 
 						// Log the current student being processed
-						console.log('Processing student:', dcid)
+						console.log('Processing student:', student.dcid)
 
-						// Simulate an asynchronous operation (e.g., API call) for each student
-						let payload = {
-							license_adobe: formatService.formatChecksForApi(true)
+						// Check if student does not have license_adobe or it is not equal to 1
+						if (!student.license_adobe || student.license_adobe !== '1') {
+							// Only update if the condition is met
+							let payload = {
+								license_adobe: formatService.formatChecksForApi(true)
+							}
+							let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, student.dcid)
+							console.log(updateRes)
+
+							// Increment totalUpdated or totalFailed based on the response status code
+							if (updateRes.response_statuscode === 200) {
+								totalUpdated++
+							} else {
+								totalFailed++
+							}
+						} else {
+							totalSkipped++
 						}
-						let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, dcid)
-						console.log(updateRes)
+
 						// Update records processed count
 						recordsProcessed++
 
@@ -285,8 +305,24 @@ define(function (require) {
 					closeLoading()
 					$scope.$apply(function () {
 						$scope.studentSpinner = true
-						let addMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully ${type}ed. Updating ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
+
+						// Construct the success message
+						let addMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
+
+						// Conditionally add updated, skipped, and failed counts to the message if they are greater than 0
+						if (totalUpdated > 0) {
+							addMessage += ` Total updated: ${totalUpdated}.`
+						}
+						if (totalSkipped > 0) {
+							addMessage += ` Total skipped: ${totalSkipped}.`
+						}
+						if (totalFailed > 0) {
+							addMessage += ` Total failed: ${totalFailed}.`
+						}
+
+						addMessage += ` Updating ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
 						$scope.addSuccessMsg(addMessage)
+
 						$http({
 							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
 							method: 'GET'
@@ -302,7 +338,6 @@ define(function (require) {
 							.finally(function () {
 								$scope.removeSuccessMsg()
 								$scope.studentSpinner = false
-								$scope.reloadData()
 							})
 					})
 				}
@@ -310,6 +345,7 @@ define(function (require) {
 				loadingDialog() // Start the loading dialog
 				await processRecord() // Process all students
 			}
+
 			let messages = {
 				success: [],
 				counter: 0,
