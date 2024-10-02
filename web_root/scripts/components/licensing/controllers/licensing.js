@@ -41,7 +41,7 @@ define(function (require) {
 				$scope.curSelectionCounts = {}
 				$scope.curSelection = {}
 				$scope.curSelectionDcids = []
-				$scope.selectedRemoveStudents = []
+				$scope.selectedRemoveStudentsDcids = []
 				$scope.useHandSelectionRemove = false
 				$scope.selectedAddStudents = []
 				$scope.selectedAddStudentsDcids = []
@@ -108,35 +108,34 @@ define(function (require) {
 			// fire the function to load the data
 			$scope.loadData($scope.userType)
 
-
 			$scope.toggleRemoveSelection = (dcid, isSelected) => {
-				const index = $scope.selectedRemoveStudents.indexOf(dcid)
+				const index = $scope.selectedRemoveStudentsDcids.indexOf(dcid)
 
 				if (isSelected && index === -1) {
 					// If the student is selected and not already in the array, add it
-					$scope.selectedRemoveStudents.push(dcid)
+					$scope.selectedRemoveStudentsDcids.push(dcid)
 				} else if (!isSelected && index !== -1) {
 					// If the student is deselected and exists in the array, remove it
-					$scope.selectedRemoveStudents.splice(index, 1)
+					$scope.selectedRemoveStudentsDcids.splice(index, 1)
 				}
 			}
 
 			$scope.selectToRemoveAll = event => {
 				const isSelected = event.target.checked
-				$scope.selectedRemoveStudents = []
+				$scope.selectedRemoveStudentsDcids = []
 
 				angular.forEach($scope.filteredlicenseStudentList, function (student) {
 					student.selectToRemove = isSelected
 
 					if (isSelected) {
-						$scope.selectedRemoveStudents.push(student.dcid)
+						$scope.selectedRemoveStudentsDcids.push(student.dcid)
 					}
 				})
 			}
 
 			$scope.cancelHandSelectionRemove = () => {
 				$scope.useHandSelectionRemove = false
-				$scope.selectedRemoveStudents = []
+				$scope.selectedRemoveStudentsDcids = []
 
 				angular.forEach($scope.filteredlicenseStudentList, function (student) {
 					student.selectToRemove = false // Deselect all students
@@ -233,7 +232,11 @@ define(function (require) {
 					oktext: 'Submit',
 					canceltext: 'Cancel',
 					ok: function () {
-						$scope.addLicenseToSelected(type, licenseType, userType, count)
+						if (type === 'Add') {
+							$scope.addLicenseToSelected(type, licenseType, userType, count)
+						} else if (type === 'Remove') {
+							$scope.removeLicenseFromSelected(type, licenseType, userType, count)
+						}
 					}
 				})
 			}
@@ -275,7 +278,7 @@ define(function (require) {
 							totalSkipped++
 						}
 
-						// Update records processed count
+						// Update records processed
 						recordsProcessed++
 
 						// Update progress percentage
@@ -304,6 +307,98 @@ define(function (require) {
 
 						addMessage += ` Updating ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
 						$scope.addSuccessMsg(addMessage)
+
+						$http({
+							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
+							method: 'GET'
+						})
+							.then(
+								function successCallback(response) {
+									// Handle success response if needed
+								},
+								function errorCallback(response) {
+									// Handle error response if needed
+								}
+							)
+							.finally(function () {
+								$scope.loadData($scope.userType)
+								$scope.removeCollapsedClass('header2')
+								$scope.removeSuccessMsg()
+								$scope.studentSpinner = false
+							})
+					})
+				}
+
+				loadingDialog() // Start the loading dialog
+				await processRecord() // Process all students
+			}
+
+			$scope.removeLicenseFromSelected = async (type, licenseType, userType, count) => {
+				let totalRecs = $scope.selectedRemoveStudentsDcids.length
+				let recordsProcessed = 0
+				let totalSkipped = 0
+				let totalUpdated = 0
+				let totalFailed = 0
+
+				// Filter out selected students based on dcid
+				let filteredStudents = $scope.licenseList[userType].filter(student => $scope.selectedRemoveStudentsDcids.includes(student.dcid))
+
+				// Function to process each student
+				async function processRecord() {
+					for (let student of filteredStudents) {
+						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
+
+						// Log the current student being processed
+						console.log('Processing student:', student.dcid)
+
+						// Check if student does not have license_adobe or it is not equal to 1
+						if (student.license_adobe || student.license_adobe !== '0') {
+							// Only update if the condition is met
+							let payload = {
+								license_adobe: formatService.formatChecksForApi(false)
+							}
+							let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, student.dcid)
+							console.log(updateRes)
+
+							// Increment totalUpdated or totalFailed based on the response status code
+							if (updateRes.response_statuscode === 200) {
+								totalUpdated++
+							} else {
+								totalFailed++
+							}
+						} else {
+							totalSkipped++
+						}
+
+						// Update records processed count
+						recordsProcessed++
+
+						// Update progress percentage
+						let pct = Math.round((recordsProcessed / totalRecs) * 100)
+						updateLoadingDialogPercentComplete(pct)
+					}
+
+					// Close loading dialog once all records are processed
+					closeLoading()
+					$scope.$apply(function () {
+						$scope.studentSpinner = true
+
+						// Construct the success message
+						let removeMessage = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
+
+						// Conditionally add updated, skipped, and failed counts to the message if they are greater than 0
+						if (totalUpdated > 0) {
+							removeMessage += ` Total removed: ${totalUpdated}.`
+						}
+						if (totalSkipped > 0) {
+							removeMessage += ` Total skipped: ${totalSkipped}.`
+						}
+						if (totalFailed > 0) {
+							removeMessage += ` Total failed: ${totalFailed}.`
+						}
+
+						removeMessage += ` Removing from ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
+						$scope.addSuccessMsg(removeMessage)
 
 						$http({
 							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',

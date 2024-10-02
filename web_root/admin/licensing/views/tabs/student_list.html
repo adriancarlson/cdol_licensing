@@ -85,18 +85,19 @@
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
                         data-ng-hide="!useHandSelectionRemove">Selected:
-                        {{selectedRemoveStudents.length}}</span></strong>
+                        {{selectedRemoveStudentsDcids.length}}</span></strong>
             </div>
             <div class="col-auto me-2">
                 <button data-ng-hide="useHandSelectionRemove"
-                    data-ng-click="useHandSelectionRemove = true; selectedRemoveStudents = []">Select By
+                    data-ng-click="useHandSelectionRemove = true; selectedRemoveStudentsDcids = []">Select By
                     Hand</button>
                 <button data-ng-hide="!useHandSelectionRemove" data-ng-click="cancelHandSelectionRemove()"
                     class="dark-orange">Cancel Select By Hand</button>
-                <button data-ng-click="removeLicenseFromSelected()"
-                    data-ng-disabled="selectedRemoveStudents.length < 1">Remove
+                <button
+                    data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemoveStudentsDcids.length)"
+                    data-ng-disabled="selectedRemoveStudentsDcids.length < 1">Remove
                     License from Selected
-                    ({{selectedRemoveStudents.length}})</button>
+                    ({{selectedRemoveStudentsDcids.length}})</button>
             </div>
         </div>
     </div>
