@@ -108,15 +108,25 @@ define(function (require) {
 			// fire the function to load the data
 			$scope.loadData($scope.userType)
 
-			$scope.toggleRemoveSelection = (dcid, isSelected, userType) => {
-				const index = $scope[`selectedRemove${userType}Dcids`].indexOf(dcid)
+			$scope.toggleSelection = (dcid, isSelected, userType, toggleType) => {
+				// Construct the variable names using template literals
+				const selectedDcids = `selected${toggleType}${userType}Dcids`
+				const filteredLicenseList = `filteredLicense${userType}${toggleType}List`
 
-				if (isSelected && index === -1) {
-					// If the user is selected and not already in the array, add it
-					$scope[`selectedRemove${userType}Dcids`].push(dcid)
-				} else if (!isSelected && index !== -1) {
-					// If the user is deselected and exists in the array, remove it
-					$scope[`selectedRemove${userType}Dcids`].splice(index, 1)
+				if (isSelected) {
+					// Add to the selected array if it's checked
+					if (!$scope[selectedDcids].includes(dcid)) {
+						$scope[selectedDcids].push(dcid)
+					}
+				} else {
+					// Remove from the selected array if it's unchecked
+					$scope[selectedDcids] = $scope[selectedDcids].filter(id => id !== dcid)
+				}
+
+				// If toggling 'Add', update selectAllAddChecked
+				if (toggleType === 'Add') {
+					const anyUnchecked = $scope[filteredLicenseList].some(user => !user.selectToAdd)
+					$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
 				}
 			}
 
@@ -147,22 +157,26 @@ define(function (require) {
 					checkAllElement.checked = false
 				}
 			}
+			$scope.toggleSelection = (dcid, isSelected, userType, toggleType) => {
+				// Construct the variable names using template literals
+				const selectedDcids = `selected${toggleType}${userType}Dcids`
+				const filteredLicenseList = `filteredLicense${userType}${toggleType}List`
 
-			$scope.toggleAddSelection = (dcid, isSelected, userType) => {
-				// Update the selectedAddDcids list based on individual selection
 				if (isSelected) {
-					// Add to selected if it's checked
-					if (!$scope[`selectedAdd${userType}Dcids`].includes(dcid)) {
-						$scope[`selectedAdd${userType}Dcids`].push(dcid)
+					// Add to the selected array if it's checked
+					if (!$scope[selectedDcids].includes(dcid)) {
+						$scope[selectedDcids].push(dcid)
 					}
 				} else {
-					// Remove from selected if it's unchecked
-					$scope[`selectedAdd${userType}Dcids`] = $scope[`selectedAdd${userType}Dcids`].filter(id => id !== dcid)
+					// Remove from the selected array if it's unchecked
+					$scope[selectedDcids] = $scope[selectedDcids].filter(id => id !== dcid)
 				}
 
-				// Check if any checkbox is unchecked
-				const anyUnchecked = $scope[`filteredLicense${userType}AddList`].some(user => !user.selectToAdd)
-				$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
+				// If toggling 'Add', update selectAllAddChecked
+				if (toggleType === 'Add') {
+					const anyUnchecked = $scope[filteredLicenseList].some(user => !user.selectToAdd)
+					$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
+				}
 			}
 
 			$scope.selectToAddAll = (event, userType) => {

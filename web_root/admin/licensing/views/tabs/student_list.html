@@ -52,7 +52,7 @@
                 <tr data-ng-repeat="student in filteredLicensestudentsAddList">
                     <td data-ng-show="useHandstudentsSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToAdd"
-                            data-ng-change="toggleAddSelection(student.dcid, student.selectToAdd, userType)"></td>
+                            data-ng-change="toggleSelection(student.dcid, student.selectToAdd, userType,'Add')"></td>
                     <td class="nowrap"><a
                             href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
                     </td>
@@ -123,7 +123,8 @@
                 <tr data-ng-repeat="student in filteredLicensestudentsList">
                     <td data-ng-show="useHandstudentsSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToRemove"
-                            data-ng-change="toggleRemoveSelection(student.dcid, student.selectToRemove, userType)"></td>
+                            data-ng-change="toggleSelection(student.dcid, student.selectToRemove, userType, 'Remove')">
+                    </td>
                     <td class="nowrap"><a
                             href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
                     </td>
