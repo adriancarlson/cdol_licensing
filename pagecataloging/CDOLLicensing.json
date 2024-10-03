@@ -8,7 +8,7 @@
 			"sortOrder": 175,
 			"parentHTMLID": "navPeopleStudentsStudentAccountManagement",
 			"checkParams": true,
-			"pageURL": "/admin/licensing/licensing.html?license_type=adobe&user_type=students"
+			"pageURL": "/admin/licensing/licensing.html?licenseType=adobe&userType=students"
 		},
 		{
 			"htmlID": "adobe-staff-list",
@@ -18,7 +18,7 @@
 			"parentHTMLID": "navPeopleStaffManagement",
 			"sortOrder": 150,
 			"checkParams": true,
-			"pageURL": "/admin/licensing/licensing.html?license_type=adobe&user_type=users"
+			"pageURL": "/admin/licensing/licensing.html?licenseType=adobe&userType=users"
 		}
 	]
 }
