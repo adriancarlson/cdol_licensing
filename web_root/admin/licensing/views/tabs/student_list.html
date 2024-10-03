@@ -1,6 +1,7 @@
 <div data-ng-show="!studentsSpinner"></div>
 <div class="button-row" data-ng-show="!showAddTable">
-    <button data-ng-click="addCollapsedClass('header2')" data-ng-disabled="curSelectionCounts.students < 1">Load
+    <button data-ng-click="addCollapsedClass('header2', userType)"
+        data-ng-disabled="curSelectionCounts.students < 1">Load
         Current
         Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
 </div>
@@ -14,17 +15,17 @@
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
                         data-ng-hide="!useHandSelectionAdd">Selected:
-                        {{selectedAddStudentsDcids.length}}</span></strong>
+                        {{selectedAddstudentsDcids.length}}</span></strong>
             </div>
             <div class="col-auto me-2">
                 <button data-ng-hide="useHandSelectionAdd" data-ng-click="useHandSelectionAdd = true">Select By
                     Hand</button>
                 <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd(userType)"
                     class="dark-orange">Cancel Select By Hand</button>
-                <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddStudentsDcids.length)"
-                    data-ng-disabled="selectedAddStudentsDcids.length < 1">Add
+                <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddstudentsDcids.length)"
+                    data-ng-disabled="selectedAddstudentsDcids.length < 1">Add
                     License to Selected
-                    ({{selectedAddStudentsDcids.length}})</button>
+                    ({{selectedAddstudentsDcids.length}})</button>
             </div>
         </div>
     </div>
@@ -77,27 +78,26 @@
         </table>
     </div>
 </div>
-<h2 id="header2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with {{licenseType
-    |
+<h2 id="header2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with {{licenseType |
     capitalize }} Licenses</h2>
 <div id="header2Div">
     <div class="container-fluid">
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
                         data-ng-hide="!useHandSelectionRemove">Selected:
-                        {{selectedRemoveStudentsDcids.length}}</span></strong>
+                        {{selectedRemovestudentsDcids.length}}</span></strong>
             </div>
             <div class="col-auto me-2">
                 <button data-ng-hide="useHandSelectionRemove"
-                    data-ng-click="useHandSelectionRemove = true; selectedRemoveStudentsDcids = []">Select By
+                    data-ng-click="useHandSelectionRemove = true; selectedRemovestudentsDcids = []">Select By
                     Hand</button>
                 <button data-ng-hide="!useHandSelectionRemove" data-ng-click="cancelHandSelectionRemove(userType)"
                     class="dark-orange">Cancel Select By Hand</button>
                 <button
-                    data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemoveStudentsDcids.length)"
-                    data-ng-disabled="selectedRemoveStudentsDcids.length < 1">Remove
+                    data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemovestudentsDcids.length)"
+                    data-ng-disabled="selectedRemovestudentsDcids.length < 1">Remove
                     License from Selected
-                    ({{selectedRemoveStudentsDcids.length}})</button>
+                    ({{selectedRemovestudentsDcids.length}})</button>
             </div>
         </div>
     </div>

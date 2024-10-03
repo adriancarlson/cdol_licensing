@@ -198,7 +198,7 @@ define(function (require) {
 				}
 			}
 
-			$scope.addCollapsedClass = function (id) {
+			$scope.addCollapsedClass = function (id, userType) {
 				$scope[`${userType}Spinner2`] = true
 				let headerElement = document.getElementById(id)
 				let divElement = document.getElementById(`${id}Div`)
