@@ -5,8 +5,8 @@
         Current
         Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
 </div>
-<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add {{licenseType |
-    capitalize }} Licenses to Currently Selected {{userType | capitalize }}</h2>
+<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add
+    {{licenseType | capitalize}} Licenses to Currently Selected {{userType | capitalize }}</h2>
 <div id="wait-spinner-div2" data-ng-if="studentsSpinner2" class="p-4 m-3">
     <div data-pss-wait-spinner="medium" style="background-color: transparent;"></div>
 </div>
@@ -24,7 +24,7 @@
                     class="dark-orange">Cancel Select By Hand</button>
                 <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddstudentsDcids.length)"
                     data-ng-disabled="selectedAddstudentsDcids.length < 1">Add
-                    License to Selected
+                    {{licenseType | capitalize}} License to Selected {{userType | capitalize }}
                     ({{selectedAddstudentsDcids.length}})</button>
             </div>
         </div>
@@ -95,8 +95,8 @@
                     class="dark-orange">Cancel Select By Hand</button>
                 <button
                     data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemovestudentsDcids.length)"
-                    data-ng-disabled="selectedRemovestudentsDcids.length < 1">Remove
-                    License from Selected
+                    data-ng-disabled="selectedRemovestudentsDcids.length < 1">Remove {{licenseType | capitalize}}
+                    License from Selected {{userType | capitalize }}
                     ({{selectedRemovestudentsDcids.length}})</button>
             </div>
         </div>
