@@ -40,7 +40,7 @@ define(function (require) {
 				$scope.licenseList = {}
 				$scope.curSelectionCounts = {}
 				$scope.curSelection = {}
-				$scope.curSelectionDcids = []
+				$scope.curSelectionDcids = {}
 				$scope[`selectedRemove${userType}Dcids`] = []
 				$scope.useHandSelectionRemove = false
 				$scope[`selectedAdd${userType}`] = []
@@ -88,12 +88,12 @@ define(function (require) {
 					$scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
 					$scope[`selectedAdd${userType}`] = []
 					$scope[`selectedAdd${userType}Dcids`] = []
-					$scope.curSelectionDcids = []
+					$scope.curSelectionDcids[userType] = []
 					angular.forEach($scope.curSelection[userType], function (user) {
 						user.selectToAdd = true
 						$scope[`selectedAdd${userType}`].push(user)
 						$scope[`selectedAdd${userType}Dcids`].push(user.dcid)
-						$scope.curSelectionDcids.push(user.dcid)
+						$scope.curSelectionDcids[userType].push(user.dcid)
 						$scope.selectAllAddChecked = true
 					})
 				} else {
@@ -185,7 +185,7 @@ define(function (require) {
 
 			$scope.cancelHandSelectionAdd = userType => {
 				$scope.useHandSelectionAdd = false
-				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids
+				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids[userType]
 
 				angular.forEach($scope[`filteredLicense${userType}AddList`], function (user) {
 					user.selectToAdd = true // Deselect all users
