@@ -1,26 +1,27 @@
 <div data-ng-show="!studentsSpinner"></div>
-<div class="button-row" data-ng-show="!showAddTable">
+<div class="button-row" data-ng-show="!showAddstudentsTable">
     <button data-ng-click="addCollapsedClass('header2', userType)"
         data-ng-disabled="curSelectionCounts.students < 1">Load
         Current
         Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
 </div>
-<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddTable">Add
+<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddstudentsTable">Add
     {{licenseType | capitalize}} Licenses to Currently Selected {{userType | capitalize }}</h2>
 <div id="wait-spinner-div2" data-ng-if="studentsSpinner2" class="p-4 m-3">
     <div data-pss-wait-spinner="medium" style="background-color: transparent;"></div>
 </div>
-<div data-ng-hide="!showAddTable">
+<div data-ng-hide="!showAddstudentsTable">
     <div class="container-fluid">
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
-                        data-ng-hide="!useHandSelectionAdd">Selected:
+                        data-ng-hide="!useHandstudentsSelectionAdd">Selected:
                         {{selectedAddstudentsDcids.length}}</span></strong>
             </div>
             <div class="col-auto me-2">
-                <button data-ng-hide="useHandSelectionAdd" data-ng-click="useHandSelectionAdd = true">Select By
+                <button data-ng-hide="useHandstudentsSelectionAdd"
+                    data-ng-click="useHandstudentsSelectionAdd = true">Select By
                     Hand</button>
-                <button data-ng-hide="!useHandSelectionAdd" data-ng-click="cancelHandSelectionAdd(userType)"
+                <button data-ng-hide="!useHandstudentsSelectionAdd" data-ng-click="cancelHandSelectionAdd(userType)"
                     class="dark-orange">Cancel Select By Hand</button>
                 <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddstudentsDcids.length)"
                     data-ng-disabled="selectedAddstudentsDcids.length < 1">Add
@@ -34,7 +35,7 @@
         <table class="grid">
             <thead class="sticky-header">
                 <tr>
-                    <th data-ng-show="useHandSelectionAdd">
+                    <th data-ng-show="useHandstudentsSelectionAdd">
                         <input id="checkAllAdd" type="checkbox" data-ng-model="selectAllAddChecked"
                             data-ng-click="selectToAddAll($event, userType)">
                     </th>
@@ -49,7 +50,7 @@
             </thead>
             <tbody>
                 <tr data-ng-repeat="student in filteredLicensestudentsAddList">
-                    <td data-ng-show="useHandSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
+                    <td data-ng-show="useHandstudentsSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToAdd"
                             data-ng-change="toggleAddSelection(student.dcid, student.selectToAdd, userType)"></td>
                     <td class="nowrap"><a
@@ -84,15 +85,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
-                        data-ng-hide="!useHandSelectionRemove">Selected:
+                        data-ng-hide="!useHandstudentsSelectionRemove">Selected:
                         {{selectedRemovestudentsDcids.length}}</span></strong>
             </div>
             <div class="col-auto me-2">
-                <button data-ng-hide="useHandSelectionRemove"
-                    data-ng-click="useHandSelectionRemove = true; selectedRemovestudentsDcids = []">Select By
+                <button data-ng-hide="useHandstudentsSelectionRemove"
+                    data-ng-click="useHandstudentsSelectionRemove = true; selectedRemovestudentsDcids = []">Select By
                     Hand</button>
-                <button data-ng-hide="!useHandSelectionRemove" data-ng-click="cancelHandSelectionRemove(userType)"
-                    class="dark-orange">Cancel Select By Hand</button>
+                <button data-ng-hide="!useHandstudentsSelectionRemove"
+                    data-ng-click="cancelHandSelectionRemove(userType)" class="dark-orange">Cancel Select By
+                    Hand</button>
                 <button
                     data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemovestudentsDcids.length)"
                     data-ng-disabled="selectedRemovestudentsDcids.length < 1">Remove {{licenseType | capitalize}}
@@ -106,7 +108,7 @@
         <table class="grid">
             <thead class="sticky-header">
                 <tr>
-                    <th data-ng-show="useHandSelectionRemove"><input id="checkAllRemove" type="checkbox"
+                    <th data-ng-show="useHandstudentsSelectionRemove"><input id="checkAllRemove" type="checkbox"
                             data-ng-click="selectToRemoveAll($event, userType)"></th>
                     <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
                     <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
@@ -119,7 +121,7 @@
             </thead>
             <tbody>
                 <tr data-ng-repeat="student in filteredLicensestudentsList">
-                    <td data-ng-show="useHandSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
+                    <td data-ng-show="useHandstudentsSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToRemove"
                             data-ng-change="toggleRemoveSelection(student.dcid, student.selectToRemove, userType)"></td>
                     <td class="nowrap"><a

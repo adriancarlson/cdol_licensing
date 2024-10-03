@@ -42,11 +42,11 @@ define(function (require) {
 				$scope.curSelection = {}
 				$scope.curSelectionDcids = {}
 				$scope[`selectedRemove${userType}Dcids`] = []
-				$scope.useHandSelectionRemove = false
+				$scope[`useHand${userType}SelectionRemove`] = false
 				$scope[`selectedAdd${userType}`] = []
 				$scope[`selectedAdd${userType}Dcids`] = []
-				$scope.useHandSelectionAdd = false
-				$scope.showAddTable = false
+				$scope[`useHand${userType}SelectionAdd`] = false
+				$scope[`showAdd${userType}Table`] = false
 
 				//setting up arguments for PQ call
 				const pqData = { schoolID: $scope.curSchoolId }
@@ -134,7 +134,7 @@ define(function (require) {
 			}
 
 			$scope.cancelHandSelectionRemove = userType => {
-				$scope.useHandSelectionRemove = false
+				$scope[`useHand${userType}SelectionRemove`] = false
 				$scope[`selectedRemove${userType}Dcids`] = []
 
 				angular.forEach($scope[`filteredLicense${userType}List`], function (user) {
@@ -184,7 +184,7 @@ define(function (require) {
 			}
 
 			$scope.cancelHandSelectionAdd = userType => {
-				$scope.useHandSelectionAdd = false
+				$scope[`useHand${userType}SelectionAdd`] = false
 				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids[userType]
 
 				angular.forEach($scope[`filteredLicense${userType}AddList`], function (user) {
@@ -212,7 +212,7 @@ define(function (require) {
 						$scope[`${userType}Spinner2`] = false // Set spinner to false after 1 second
 					})
 				}, 400)
-				$scope.showAddTable = true
+				$scope[`showAdd${userType}Table`] = true
 			}
 
 			$scope.removeCollapsedClass = function (id) {
