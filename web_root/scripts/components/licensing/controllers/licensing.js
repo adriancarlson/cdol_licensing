@@ -160,33 +160,25 @@ define(function (require) {
 				}
 			}
 
-			$scope.cancelHandSelectionRemove = userType => {
-				$scope[`useHand${userType}SelectionRemove`] = false
-				$scope[`selectedRemove${userType}Dcids`] = []
+			$scope.cancelHandSelection = (userType, toggleType) => {
+				// Set the corresponding useHandSelection flag to false
+				$scope[`useHand${userType}Selection${toggleType}`] = false
 
-				angular.forEach($scope[`filteredLicense${userType}List`], function (user) {
-					user.selectToRemove = false // Deselect all users
+				// Clear the selected dcids based on toggleType
+				$scope[`selected${toggleType}${userType}Dcids`] = toggleType === 'Add' ? $scope.curSelectionDcids[userType] : []
+
+				// Determine the filtered license list based on toggleType
+				const filteredLicenseList = toggleType === 'Remove' ? $scope[`filteredLicense${userType}List`] : $scope[`filteredLicense${userType}${toggleType}List`]
+
+				// Loop through the appropriate filtered license list
+				angular.forEach(filteredLicenseList, user => {
+					user[`selectTo${toggleType}`] = toggleType === 'Add' // Deselect or select all users
 				})
 
-				// Uncheck the "checkAllRemove" checkbox
-				const checkAllElement = document.getElementById('checkAllRemove')
+				// Uncheck the corresponding "checkAll" checkbox
+				const checkAllElement = document.getElementById(`checkAll${toggleType}`)
 				if (checkAllElement) {
-					checkAllElement.checked = false
-				}
-			}
-
-			$scope.cancelHandSelectionAdd = userType => {
-				$scope[`useHand${userType}SelectionAdd`] = false
-				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids[userType]
-
-				angular.forEach($scope[`filteredLicense${userType}AddList`], function (user) {
-					user.selectToAdd = true // Deselect all users
-				})
-
-				// Uncheck the "checkAllAdd" checkbox
-				const checkAllElement = document.getElementById('checkAllAdd')
-				if (checkAllElement) {
-					checkAllElement.checked = true
+					checkAllElement.checked = toggleType === 'Add' // Set checked state based on toggleType
 				}
 			}
 

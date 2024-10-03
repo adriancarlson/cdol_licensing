@@ -21,7 +21,7 @@
                 <button data-ng-hide="useHandstudentsSelectionAdd"
                     data-ng-click="useHandstudentsSelectionAdd = true">Select By
                     Hand</button>
-                <button data-ng-hide="!useHandstudentsSelectionAdd" data-ng-click="cancelHandSelectionAdd(userType)"
+                <button data-ng-hide="!useHandstudentsSelectionAdd" data-ng-click="cancelHandSelection(userType, 'Add')"
                     class="dark-orange">Cancel Select By Hand</button>
                 <button data-ng-click="confirmPopUp('Add', licenseType, userType, selectedAddstudentsDcids.length)"
                     data-ng-disabled="selectedAddstudentsDcids.length < 1">Add
@@ -93,7 +93,7 @@
                     data-ng-click="useHandstudentsSelectionRemove = true; selectedRemovestudentsDcids = []">Select By
                     Hand</button>
                 <button data-ng-hide="!useHandstudentsSelectionRemove"
-                    data-ng-click="cancelHandSelectionRemove(userType)" class="dark-orange">Cancel Select By
+                    data-ng-click="cancelHandSelection(userType, 'Remove')" class="dark-orange">Cancel Select By
                     Hand</button>
                 <button
                     data-ng-click="confirmPopUp('Remove', licenseType, userType, selectedRemovestudentsDcids.length)"
