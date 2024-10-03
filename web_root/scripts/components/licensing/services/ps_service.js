@@ -11,13 +11,13 @@ define(function (require) {
 				getPQResults: (query, data, curSelect) => {
 					let deferredResponse = $q.defer()
 					// Build params object
-                    let params = { pagesize: 0 }
+					let params = { pagesize: 0 }
 
-                    // If curSelect is passed, add the 'dofor' parameter
-                    if (curSelect) {
-                        params.dofor = 'selection:selectedstudents'
-                    }
-                    
+					// If curSelect is passed, add the 'dofor' parameter
+					if (curSelect) {
+						params.dofor = `selection:selected${curSelect}`
+					}
+
 					$http({
 						url: '/ws/schema/query/' + query,
 						method: 'POST',

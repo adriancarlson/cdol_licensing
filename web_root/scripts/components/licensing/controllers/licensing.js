@@ -82,7 +82,7 @@ define(function (require) {
 				}
 
 				// getting current selection
-				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
+				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, userType === 'users' ? 'schoolstaff' : userType)
 				if (curSelectRes.length > 0) {
 					$scope.curSelection[userType] = curSelectRes
 					$scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
