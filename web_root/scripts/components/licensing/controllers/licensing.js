@@ -32,19 +32,19 @@ define(function (require) {
 
 			document.title = `${$filter('capitalize')($scope.licenseType)} Licensing`
 
-			$scope.loadData = async user_type => {
+			$scope.loadData = async userType => {
 				console.log('running Load Data')
 				loadingDialog()
-				$scope.studentSpinner = true
+				$scope[`${userType}Spinner`] = true
 				$scope.licenseListCounts = {}
 				$scope.licenseList = {}
 				$scope.curSelectionCounts = {}
 				$scope.curSelection = {}
 				$scope.curSelectionDcids = []
-				$scope.selectedRemoveStudentsDcids = []
+				$scope[`selectedRemove${userType}Dcids`] = []
 				$scope.useHandSelectionRemove = false
-				$scope.selectedAddStudents = []
-				$scope.selectedAddStudentsDcids = []
+				$scope[`selectedAdd${userType}`] = []
+				$scope[`selectedAdd${userType}Dcids`] = []
 				$scope.useHandSelectionAdd = false
 				$scope.showAddTable = false
 
@@ -63,44 +63,44 @@ define(function (require) {
 					}
 				}
 
-				// getting existing students with license
-				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData)
+				// getting existing users with license
+				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData)
 
 				//updating licenseList obj
 				if (res.length > 0) {
-					updatelicenseList(user_type, res)
+					updatelicenseList(userType, res)
 				} else {
-					$scope.licenseList[user_type] = {}
+					$scope.licenseList[userType] = {}
 				}
 				// Calculate the number of records where license_adobe == '1'
 				$scope.licenseListCounts = $scope.licenseListCounts || {}
 				if ($scope.licenseType === 'adobe') {
-					$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].filter(item => item.license_adobe == '1').length
+					$scope.licenseListCounts[userType] = $scope.licenseList[userType].filter(item => item.license_adobe == '1').length
 				} else {
 					// Otherwise, assign the value as-is
-					$scope.licenseListCounts[user_type] = $scope.licenseList[user_type].length
+					$scope.licenseListCounts[userType] = $scope.licenseList[userType].length
 				}
 
 				// getting current selection
-				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${user_type}.licensing`, pqData, true)
+				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
 				if (curSelectRes.length > 0) {
-					$scope.curSelection[user_type] = curSelectRes
-					$scope.curSelectionCounts[user_type] = $scope.curSelection[user_type].length
-					$scope.selectedAddStudents = []
-					$scope.selectedAddStudentsDcids = []
+					$scope.curSelection[userType] = curSelectRes
+					$scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
+					$scope[`selectedAdd${userType}`] = []
+					$scope[`selectedAdd${userType}Dcids`] = []
 					$scope.curSelectionDcids = []
-					angular.forEach($scope.curSelection[user_type], function (student) {
-						student.selectToAdd = true
-						$scope.selectedAddStudents.push(student)
-						$scope.selectedAddStudentsDcids.push(student.dcid)
-						$scope.curSelectionDcids.push(student.dcid)
+					angular.forEach($scope.curSelection[userType], function (user) {
+						user.selectToAdd = true
+						$scope[`selectedAdd${userType}`].push(user)
+						$scope[`selectedAdd${userType}Dcids`].push(user.dcid)
+						$scope.curSelectionDcids.push(user.dcid)
 						$scope.selectAllAddChecked = true
 					})
 				} else {
-					$scope.curSelection[user_type] = {}
-					$scope.curSelectionCounts[user_type] = 0
+					$scope.curSelection[userType] = {}
+					$scope.curSelectionCounts[userType] = 0
 				}
-				$scope.studentSpinner = false
+				$scope[`${userType}Spinner`] = false
 				$scope.$digest()
 				closeLoading()
 			}
@@ -108,37 +108,37 @@ define(function (require) {
 			// fire the function to load the data
 			$scope.loadData($scope.userType)
 
-			$scope.toggleRemoveSelection = (dcid, isSelected) => {
-				const index = $scope.selectedRemoveStudentsDcids.indexOf(dcid)
+			$scope.toggleRemoveSelection = (dcid, isSelected, userType) => {
+				const index = $scope[`selectedRemove${userType}Dcids`].indexOf(dcid)
 
 				if (isSelected && index === -1) {
-					// If the student is selected and not already in the array, add it
-					$scope.selectedRemoveStudentsDcids.push(dcid)
+					// If the user is selected and not already in the array, add it
+					$scope[`selectedRemove${userType}Dcids`].push(dcid)
 				} else if (!isSelected && index !== -1) {
-					// If the student is deselected and exists in the array, remove it
-					$scope.selectedRemoveStudentsDcids.splice(index, 1)
+					// If the user is deselected and exists in the array, remove it
+					$scope[`selectedRemove${userType}Dcids`].splice(index, 1)
 				}
 			}
 
-			$scope.selectToRemoveAll = event => {
+			$scope.selectToRemoveAll = (event, userType) => {
 				const isSelected = event.target.checked
-				$scope.selectedRemoveStudentsDcids = []
+				$scope[`selectedRemove${userType}Dcids`] = []
 
-				angular.forEach($scope.filteredlicenseStudentList, function (student) {
-					student.selectToRemove = isSelected
+				angular.forEach($scope[`filteredlicense${userType}List`], function (user) {
+					user.selectToRemove = isSelected
 
 					if (isSelected) {
-						$scope.selectedRemoveStudentsDcids.push(student.dcid)
+						$scope[`selectedRemove${userType}Dcids`].push(user.dcid)
 					}
 				})
 			}
 
-			$scope.cancelHandSelectionRemove = () => {
+			$scope.cancelHandSelectionRemove = userType => {
 				$scope.useHandSelectionRemove = false
-				$scope.selectedRemoveStudentsDcids = []
+				$scope[`selectedRemove${userType}Dcids`] = []
 
-				angular.forEach($scope.filteredlicenseStudentList, function (student) {
-					student.selectToRemove = false // Deselect all students
+				angular.forEach($scope[`filteredlicense${userType}List`], function (user) {
+					user.selectToRemove = false // Deselect all users
 				})
 
 				// Uncheck the "checkAllRemove" checkbox
@@ -148,50 +148,50 @@ define(function (require) {
 				}
 			}
 
-			$scope.toggleAddSelection = (dcid, isSelected) => {
-				// Update the selectedAddStudentsDcids list based on individual selection
+			$scope.toggleAddSelection = (dcid, isSelected, userType) => {
+				// Update the selectedAddDcids list based on individual selection
 				if (isSelected) {
 					// Add to selected if it's checked
-					if (!$scope.selectedAddStudentsDcids.includes(dcid)) {
-						$scope.selectedAddStudentsDcids.push(dcid)
+					if (!$scope[`selectedAdd${userType}Dcids`].includes(dcid)) {
+						$scope[`selectedAdd${userType}Dcids`].push(dcid)
 					}
 				} else {
 					// Remove from selected if it's unchecked
-					$scope.selectedAddStudentsDcids = $scope.selectedAddStudentsDcids.filter(id => id !== dcid)
+					$scope[`selectedAdd${userType}Dcids`] = $scope[`selectedAdd${userType}Dcids`].filter(id => id !== dcid)
 				}
 
 				// Check if any checkbox is unchecked
-				const anyUnchecked = $scope.filteredlicenseStudentAddList.some(student => !student.selectToAdd)
+				const anyUnchecked = $scope[`filteredlicense${userType}AddList`].some(user => !user.selectToAdd)
 				$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
 			}
 
-			$scope.selectToAddAll = event => {
+			$scope.selectToAddAll = (event, userType) => {
 				const isChecked = event.target.checked // Get the state of the "Select All" checkbox
 				$scope.selectAllAddChecked = isChecked // Update the model for the "Select All" checkbox
 
 				// Set all individual checkboxes based on "Select All" checkbox state
-				angular.forEach($scope.filteredlicenseStudentAddList, student => {
-					student.selectToAdd = isChecked // Check or uncheck each individual checkbox
-					// Update selectedAddStudentsDcids accordingly
+				angular.forEach($scope[`filteredlicense${userType}AddList`], user => {
+					user.selectToAdd = isChecked // Check or uncheck each individual checkbox
+					// Update selectedAddDcids accordingly
 					if (isChecked) {
-						if (!$scope.selectedAddStudentsDcids.includes(student.dcid)) {
-							$scope.selectedAddStudentsDcids.push(student.dcid)
+						if (!$scope[`selectedAdd${userType}Dcids`].includes(user.dcid)) {
+							$scope[`selectedAdd${userType}Dcids`].push(user.dcid)
 						}
 					} else {
-						$scope.selectedAddStudentsDcids = $scope.selectedAddStudentsDcids.filter(id => id !== student.dcid)
+						$scope[`selectedAdd${userType}Dcids`] = $scope[`selectedAdd${userType}Dcids`].filter(id => id !== user.dcid)
 					}
 				})
 			}
 
-			$scope.cancelHandSelectionAdd = () => {
+			$scope.cancelHandSelectionAdd = userType => {
 				$scope.useHandSelectionAdd = false
-				$scope.selectedAddStudentsDcids = $scope.curSelectionDcids
+				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids
 
-				angular.forEach($scope.filteredlicenseStudentAddList, function (student) {
-					student.selectToAdd = true // Deselect all students
+				angular.forEach($scope[`filteredlicense${userType}AddList`], function (user) {
+					user.selectToAdd = true // Deselect all users
 				})
 
-				// Uncheck the "checkAllRemove" checkbox
+				// Uncheck the "checkAllAdd" checkbox
 				const checkAllElement = document.getElementById('checkAllAdd')
 				if (checkAllElement) {
 					checkAllElement.checked = true
@@ -199,7 +199,7 @@ define(function (require) {
 			}
 
 			$scope.addCollapsedClass = function (id) {
-				$scope.studentSpinner2 = true
+				$scope[`${userType}Spinner2`] = true
 				let headerElement = document.getElementById(id)
 				let divElement = document.getElementById(`${id}Div`)
 				if (headerElement) {
@@ -209,7 +209,7 @@ define(function (require) {
 				}
 				setTimeout(function () {
 					$scope.$apply(function () {
-						$scope.studentSpinner2 = false // Set spinner to false after 1 second
+						$scope[`${userType}Spinner2`] = false // Set spinner to false after 1 second
 					})
 				}, 400)
 				$scope.showAddTable = true
@@ -239,13 +239,13 @@ define(function (require) {
 
 			$scope.processLicenseForSelected = async (type, licenseType, userType, count) => {
 				// Use template literals to dynamically select the correct properties
-				let dcidKey = `selected${type}StudentsDcids`
-				let studentListKey = type === 'Add' ? `selected${type}Students` : `licenseList[userType]`
+				let dcidKey = `selected${type}${userType}Dcids` // dynamic key for selected Dcids
+				let userListKey = type === 'Add' ? `selected${type}${userType}` : `licenseList[userType]` // key for selected or license list
 
-				let selectedStudentsDcids = $scope[dcidKey]
-				let filteredStudents = type === 'Add' ? $scope[studentListKey].filter(student => selectedStudentsDcids.includes(student.dcid)) : $scope.licenseList[userType].filter(student => selectedStudentsDcids.includes(student.dcid))
+				let selectedUserDcids = $scope[dcidKey]
+				let filteredUsers = type === 'Add' ? $scope[userListKey].filter(user => selectedUserDcids.includes(user.dcid)) : $scope.licenseList[userType].filter(user => selectedUserDcids.includes(user.dcid))
 
-				let totalRecs = selectedStudentsDcids.length
+				let totalRecs = selectedUserDcids.length
 				let recordsProcessed = 0
 				let totalSkipped = 0
 				let totalUpdated = 0
@@ -256,20 +256,20 @@ define(function (require) {
 				const formatCheckValue = type === 'Add' ? true : false // Format check value for API
 				const actionVerb = type === 'Add' ? 'updated' : 'removed' // Used in messages
 
-				// Function to process each student
+				// Function to process each user (previously student)
 				async function processRecord() {
-					for (let student of filteredStudents) {
+					for (let user of filteredUsers) {
 						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
 
-						// Log the current student being processed
-						console.log('Processing student:', student.dcid)
+						// Log the current user being processed
+						console.log('Processing user:', user.dcid)
 
-						// Check if the student needs an update based on the type
-						if ((type === 'Add' && (!student.license_adobe || student.license_adobe !== '1')) || (type === 'Remove' && student.license_adobe && student.license_adobe !== '0')) {
+						// Check if the user needs an update based on the type
+						if ((type === 'Add' && (!user.license_adobe || user.license_adobe !== '1')) || (type === 'Remove' && user.license_adobe && user.license_adobe !== '0')) {
 							let payload = {
 								license_adobe: formatService.formatChecksForApi(formatCheckValue)
 							}
-							let updateRes = await psApiService.psApiCall('u_student_additional_info', 'PUT', payload, student.dcid)
+							let updateRes = await psApiService.psApiCall('u_user_additional_info', 'PUT', payload, user.dcid)
 							console.log(updateRes)
 
 							// Increment totalUpdated or totalFailed based on the response status code
@@ -293,7 +293,7 @@ define(function (require) {
 					// Close loading dialog once all records are processed
 					closeLoading()
 					$scope.$apply(function () {
-						$scope.studentSpinner = true
+						$scope[`${userType}Spinner`] = true
 
 						// Construct the success message
 						let message = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
@@ -323,16 +323,16 @@ define(function (require) {
 								}
 							)
 							.finally(function () {
-								$scope.loadData($scope.userType)
-								$scope.removeCollapsedClass('header2')
-								$scope.removeSuccessMsg()
-								$scope.studentSpinner = false
+								$scope.loadData($scope.userType) // Reload data
+								$scope.removeCollapsedClass('header2') // Remove collapsed class
+								$scope.removeSuccessMsg() // Remove success message
+								$scope[`${userType}Spinner`] = false // Stop the spinner
 							})
 					})
 				}
 
 				loadingDialog() // Start the loading dialog
-				await processRecord() // Process all students
+				await processRecord() // Process all users
 			}
 
 			let messages = {
