@@ -30,7 +30,7 @@
         </div>
     </div>
     <div id="license-student-add-grid" data-pss-grid-widget data-data="curSelection.students"
-        data-filtered-data="filteredLicensestudentAddList" data-filter-constraint="no-filters">
+        data-filtered-data="filteredLicensestudentsAddList" data-filter-constraint="no-filters">
         <table class="grid">
             <thead class="sticky-header">
                 <tr>
@@ -48,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="student in filteredLicensestudentAddList">
+                <tr data-ng-repeat="student in filteredLicensestudentsAddList">
                     <td data-ng-show="useHandSelectionAdd"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToAdd"
                             data-ng-change="toggleAddSelection(student.dcid, student.selectToAdd, userType)"></td>
@@ -102,7 +102,7 @@
         </div>
     </div>
     <div id="license-student-grid" data-pss-grid-widget data-data="licenseList.students"
-        data-filtered-data="filteredLicensestudentList" data-filter-constraint="no-filters">
+        data-filtered-data="filteredLicensestudentsList" data-filter-constraint="no-filters">
         <table class="grid">
             <thead class="sticky-header">
                 <tr>
@@ -118,7 +118,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="student in filteredLicensestudentList">
+                <tr data-ng-repeat="student in filteredLicensestudentsList">
                     <td data-ng-show="useHandSelectionRemove"><input row-data="{{student.dcid}}" type="checkbox"
                             data-ng-model="student.selectToRemove"
                             data-ng-change="toggleRemoveSelection(student.dcid, student.selectToRemove, userType)"></td>
