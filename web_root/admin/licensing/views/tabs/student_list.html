@@ -37,7 +37,7 @@
                 <tr>
                     <th data-ng-show="useHandstudentsSelectionAdd">
                         <input id="checkAllAdd" type="checkbox" data-ng-model="selectAllAddChecked"
-                            data-ng-click="selectToAddAll($event, userType)">
+                            data-ng-click="selectToAll($event, userType, 'Add')">
                     </th>
                     <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
                     <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
@@ -109,7 +109,7 @@
             <thead class="sticky-header">
                 <tr>
                     <th data-ng-show="useHandstudentsSelectionRemove"><input id="checkAllRemove" type="checkbox"
-                            data-ng-click="selectToRemoveAll($event, userType)"></th>
+                            data-ng-click="selectToAll($event, userType, 'Remove')"></th>
                     <th data-pss-sort-fields="number" class="nowrap">Student Number</th>
                     <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending" class="nowrap">Student Name
                     </th>

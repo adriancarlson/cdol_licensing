@@ -130,17 +130,34 @@ define(function (require) {
 				}
 			}
 
-			$scope.selectToRemoveAll = (event, userType) => {
-				const isSelected = event.target.checked
-				$scope[`selectedRemove${userType}Dcids`] = []
+			$scope.selectToAll = (event, userType, toggleType) => {
+				const isSelected = event.target.checked // Get the state of the "Select All" checkbox
 
-				angular.forEach($scope[`filteredLicense${userType}List`], function (user) {
-					user.selectToRemove = isSelected
+				// Clear the corresponding selected array based on toggleType
+				$scope[`selected${toggleType}${userType}Dcids`] = []
+
+				// Determine the correct filtered license list based on toggleType
+				const filteredLicenseList = toggleType === 'Remove' ? $scope[`filteredLicense${userType}List`] : $scope[`filteredLicense${userType}${toggleType}List`]
+
+				// Loop through the appropriate filtered license list
+				angular.forEach(filteredLicenseList, user => {
+					user[`selectTo${toggleType}`] = isSelected // Set the state of each individual checkbox
 
 					if (isSelected) {
-						$scope[`selectedRemove${userType}Dcids`].push(user.dcid)
+						// Add to the selected array if the checkbox is checked
+						if (!$scope[`selected${toggleType}${userType}Dcids`].includes(user.dcid)) {
+							$scope[`selected${toggleType}${userType}Dcids`].push(user.dcid)
+						}
+					} else {
+						// Remove from the selected array if the checkbox is unchecked
+						$scope[`selected${toggleType}${userType}Dcids`] = $scope[`selected${toggleType}${userType}Dcids`].filter(id => id !== user.dcid)
 					}
 				})
+
+				// If toggling 'Add', update selectAllAddChecked
+				if (toggleType === 'Add') {
+					$scope.selectAllAddChecked = isSelected // Update the model for the "Select All" checkbox
+				}
 			}
 
 			$scope.cancelHandSelectionRemove = userType => {
@@ -156,45 +173,6 @@ define(function (require) {
 				if (checkAllElement) {
 					checkAllElement.checked = false
 				}
-			}
-			$scope.toggleSelection = (dcid, isSelected, userType, toggleType) => {
-				// Construct the variable names using template literals
-				const selectedDcids = `selected${toggleType}${userType}Dcids`
-				const filteredLicenseList = `filteredLicense${userType}${toggleType}List`
-
-				if (isSelected) {
-					// Add to the selected array if it's checked
-					if (!$scope[selectedDcids].includes(dcid)) {
-						$scope[selectedDcids].push(dcid)
-					}
-				} else {
-					// Remove from the selected array if it's unchecked
-					$scope[selectedDcids] = $scope[selectedDcids].filter(id => id !== dcid)
-				}
-
-				// If toggling 'Add', update selectAllAddChecked
-				if (toggleType === 'Add') {
-					const anyUnchecked = $scope[filteredLicenseList].some(user => !user.selectToAdd)
-					$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
-				}
-			}
-
-			$scope.selectToAddAll = (event, userType) => {
-				const isChecked = event.target.checked // Get the state of the "Select All" checkbox
-				$scope.selectAllAddChecked = isChecked // Update the model for the "Select All" checkbox
-
-				// Set all individual checkboxes based on "Select All" checkbox state
-				angular.forEach($scope[`filteredLicense${userType}AddList`], user => {
-					user.selectToAdd = isChecked // Check or uncheck each individual checkbox
-					// Update selectedAddDcids accordingly
-					if (isChecked) {
-						if (!$scope[`selectedAdd${userType}Dcids`].includes(user.dcid)) {
-							$scope[`selectedAdd${userType}Dcids`].push(user.dcid)
-						}
-					} else {
-						$scope[`selectedAdd${userType}Dcids`] = $scope[`selectedAdd${userType}Dcids`].filter(id => id !== user.dcid)
-					}
-				})
 			}
 
 			$scope.cancelHandSelectionAdd = userType => {
