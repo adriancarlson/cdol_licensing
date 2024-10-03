@@ -1,5 +1,5 @@
-<div id="license-users-grid" data-pss-grid-widget data-data="licenseList.users" data-filtered-data="filteredLicenseUsersList"
-    data-client-side-pagination="true">
+<div id="license-users-grid" data-pss-grid-widget data-data="licenseList.users"
+    data-filtered-data="filteredLicenseUsersList" data-client-side-pagination="true">
     <table class="grid">
         <thead class="sticky-header">
             <tr>
@@ -15,8 +15,7 @@
         <tbody>
             <tr data-ng-repeat="user in filteredLicenseUsersList">
                 <td row-data="{{user.dcid}}">{{$index +1}}</td>
-                <td class="nowrap"><a
-                        href="/admin/faculty/edit.html?frn=005{{user.dcid}}">{{user.number}}</a></td>
+                <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.dcid}}">{{user.number}}</a></td>
                 <td class="nowrap">{{user.lastfirst}}</td>
                 <td class="nowrap">{{user.email_addr}}</td>
                 <td><span

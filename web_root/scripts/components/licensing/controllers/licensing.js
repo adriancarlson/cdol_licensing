@@ -124,7 +124,7 @@ define(function (require) {
 				const isSelected = event.target.checked
 				$scope[`selectedRemove${userType}Dcids`] = []
 
-				angular.forEach($scope[`filteredlicense${userType}List`], function (user) {
+				angular.forEach($scope[`filteredLicense${userType}List`], function (user) {
 					user.selectToRemove = isSelected
 
 					if (isSelected) {
@@ -137,7 +137,7 @@ define(function (require) {
 				$scope.useHandSelectionRemove = false
 				$scope[`selectedRemove${userType}Dcids`] = []
 
-				angular.forEach($scope[`filteredlicense${userType}List`], function (user) {
+				angular.forEach($scope[`filteredLicense${userType}List`], function (user) {
 					user.selectToRemove = false // Deselect all users
 				})
 
@@ -161,7 +161,7 @@ define(function (require) {
 				}
 
 				// Check if any checkbox is unchecked
-				const anyUnchecked = $scope[`filteredlicense${userType}AddList`].some(user => !user.selectToAdd)
+				const anyUnchecked = $scope[`filteredLicense${userType}AddList`].some(user => !user.selectToAdd)
 				$scope.selectAllAddChecked = !anyUnchecked // Set selectAllAddChecked to false if any are unchecked
 			}
 
@@ -170,7 +170,7 @@ define(function (require) {
 				$scope.selectAllAddChecked = isChecked // Update the model for the "Select All" checkbox
 
 				// Set all individual checkboxes based on "Select All" checkbox state
-				angular.forEach($scope[`filteredlicense${userType}AddList`], user => {
+				angular.forEach($scope[`filteredLicense${userType}AddList`], user => {
 					user.selectToAdd = isChecked // Check or uncheck each individual checkbox
 					// Update selectedAddDcids accordingly
 					if (isChecked) {
@@ -187,7 +187,7 @@ define(function (require) {
 				$scope.useHandSelectionAdd = false
 				$scope[`selectedAdd${userType}Dcids`] = $scope.curSelectionDcids
 
-				angular.forEach($scope[`filteredlicense${userType}AddList`], function (user) {
+				angular.forEach($scope[`filteredLicense${userType}AddList`], function (user) {
 					user.selectToAdd = true // Deselect all users
 				})
 
