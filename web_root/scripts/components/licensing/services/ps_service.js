@@ -15,7 +15,7 @@ define(function (require) {
 
 					// If curSelect is passed, add the 'dofor' parameter
 					if (curSelect) {
-						params.dofor = `selection:selected${curSelect}`
+						params.dofor = 'selection:selectedstudents'
 					}
 
 					$http({
