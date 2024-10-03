@@ -309,7 +309,7 @@ define(function (require) {
 							)
 							.finally(function () {
 								$scope.loadData($scope.userType) // Reload data
-								$scope.removeCollapsedClass('header2') // Remove collapsed class
+								$scope.removeCollapsedClass(`${userType}Header2`) // Remove collapsed class
 								$scope.removeSuccessMsg() // Remove success message
 								$scope[`${userType}Spinner`] = false // Stop the spinner
 							})

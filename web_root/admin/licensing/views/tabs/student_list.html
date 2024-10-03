@@ -1,11 +1,11 @@
 <div data-ng-show="!studentsSpinner"></div>
 <div class="button-row" data-ng-show="!showAddstudentsTable">
-    <button data-ng-click="addCollapsedClass('header2', userType)"
+    <button data-ng-click="addCollapsedClass('studentsHeader2', userType)"
         data-ng-disabled="curSelectionCounts.students < 1">Load
         Current
         Currently Selected {{userType | capitalize }} ({{curSelectionCounts.students}})</button>
 </div>
-<h2 id="header1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddstudentsTable">Add
+<h2 id="studentsHeader1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddstudentsTable">Add
     {{licenseType | capitalize}} Licenses to Currently Selected {{userType | capitalize }}</h2>
 <div id="wait-spinner-div2" data-ng-if="studentsSpinner2" class="p-4 m-3">
     <div data-pss-wait-spinner="medium" style="background-color: transparent;"></div>
@@ -79,9 +79,10 @@
         </table>
     </div>
 </div>
-<h2 id="header2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with {{licenseType |
+<h2 id="studentsHeader2" pss-expand-collapse-item="collapsibleHeaders">Current {{userType | capitalize }} with
+    {{licenseType |
     capitalize }} Licenses</h2>
-<div id="header2Div">
+<div id="studentsHeader2Div">
     <div class="container-fluid">
         <div class="row">
             <div class="col-auto me-auto"><strong>Total: {{licenseListCounts.students}} <span
