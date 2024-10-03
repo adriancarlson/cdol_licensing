@@ -255,6 +255,7 @@ define(function (require) {
 				const licenseCheck = type === 'Add' ? '1' : '0' // Check for license existence (add: 1, remove: 0)
 				const formatCheckValue = type === 'Add' ? true : false // Format check value for API
 				const actionVerb = type === 'Add' ? 'updated' : 'removed' // Used in messages
+				const apiFormatUserType = userType === 'students' ? 'student' : userType // Format user type for messages
 
 				// Function to process each user (previously student)
 				async function processRecord() {
@@ -269,7 +270,7 @@ define(function (require) {
 							let payload = {
 								license_adobe: formatService.formatChecksForApi(formatCheckValue)
 							}
-							let updateRes = await psApiService.psApiCall('u_user_additional_info', 'PUT', payload, user.dcid)
+							let updateRes = await psApiService.psApiCall(`u_${apiFormatUserType}_additional_info`, 'PUT', payload, user.dcid)
 							console.log(updateRes)
 
 							// Increment totalUpdated or totalFailed based on the response status code
