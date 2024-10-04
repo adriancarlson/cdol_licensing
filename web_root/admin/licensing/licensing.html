@@ -32,17 +32,17 @@
             </div> -->
             <div class="tabs">
                 <ul class="shown_tabs">
-                    <li data-ng-click="loadData('students')" data-context="students"><a
-                            href="#tabstudents">Students</a></li>
+                    <li data-ng-click="loadData('students')" data-context="students"><a href="#tabstudents">Students</a>
+                    </li>
                     <li data-ng-click="loadData('users')" data-context="users"><a href="#tabusers">Staff</a></li>
                 </ul>
                 <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
                 <div id="withTimer" pss-feedback-widget timed-handler="msgContext.successMsgHandler"></div>
-                <div id="wait-spinner-div" data-ng-show="studentsSpinner" class="m-3">
+                <div id="wait-spinner-div" data-ng-show="mainSpinner" class="m-3">
                     <div data-pss-wait-spinner="large" style="background-color: transparent;"></div>
                 </div>
-                <student-list id="tabstudents" data-ng-show="!studentsSpinner"></student-list>
-                <user-list id="tabusers" data-ng-show="!usersSpinner"></user-list>
+                <student-list id="tabstudents" data-ng-show="userType === 'students' && !mainSpinner"></student-list>
+                <user-list id="tabusers" data-ng-show="userType === 'users' && !mainSpinner"></user-list>
             </div>
 
         </div>
