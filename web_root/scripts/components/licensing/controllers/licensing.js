@@ -170,7 +170,7 @@ define(function (require) {
 			}
 
 			$scope.addCollapsedClass = function (id, userType) {
-				$scope[`${userType}Spinner2`] = true
+				$scope[`${userType}Spinner`] = true
 				let headerElement = document.getElementById(id)
 				let divElement = document.getElementById(`${id}Div`)
 				if (headerElement) {
@@ -180,7 +180,7 @@ define(function (require) {
 				}
 				setTimeout(function () {
 					$scope.$apply(function () {
-						$scope[`${userType}Spinner2`] = false // Set spinner to false after 1 second
+						$scope[`${userType}Spinner`] = false // Set spinner to false after 1 second
 					})
 				}, 400)
 				$scope[`showAdd${userType}Table`] = true
@@ -296,7 +296,7 @@ define(function (require) {
 							)
 							.finally(function () {
 								$scope.loadData($scope.userType) // Reload data
-								$scope.removeCollapsedClass(`${userType}Header2`) // Remove collapsed class
+								$scope.removeCollapsedClass(`${userType}Header`) // Remove collapsed class
 								$scope.removeSuccessMsg() // Remove success message
 								$scope.mainSpinner = false // Stop the spinner
 							})
