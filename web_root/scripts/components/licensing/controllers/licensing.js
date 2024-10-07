@@ -14,26 +14,13 @@ define(function (require) {
 			$scope.curSchoolId = $attrs.ngCurSchoolId
 			$scope.licenseType = $attrs.ngLicenseType
 			$scope.userType = $attrs.ngUserType
-			// $scope.selectedTab = document.querySelector('[aria-selected="true"]').getAttribute('data-context')
-
-			// Step 1: Find the element matching $scope.userType
-			$scope.selectedTab = document.querySelector(`[data-context="${$scope.userType}"]`)
-
-			// Step 2: Unset aria-selected="true" on previously selected elements
-			let previouslySelectedElement = document.querySelector('[aria-selected="true"]')
-			if (previouslySelectedElement) {
-				previouslySelectedElement.setAttribute('aria-selected', 'false')
-			}
-
-			// Step 3: Set aria-selected="true" on the element with the matching data-context
-			if ($scope.selectedTab) {
-				$scope.selectedTab.setAttribute('aria-selected', 'true')
-			}
 
 			document.title = `${$filter('capitalize')($scope.licenseType)} Licensing`
 
 			$scope.loadData = async userType => {
-				console.log('running Load Data')
+				$scope.userType = userType
+				console.log('$scope.userType', $scope.userType)
+				console.log('running Load Data userType:', userType)
 				loadingDialog()
 				$scope[`${userType}Spinner`] = true
 				$scope.licenseListCounts = {}
