@@ -22,7 +22,7 @@ define(function (require) {
 				console.log('$scope.userType', $scope.userType)
 				console.log('running Load Data userType:', userType)
 				loadingDialog()
-				$scope[`${userType}Spinner`] = true
+				$scope.mainSpinner = true
 				$scope.licenseListCounts = {}
 				$scope.licenseList = {}
 				$scope.curSelectionCounts = {}
@@ -87,7 +87,7 @@ define(function (require) {
 					$scope.curSelection[userType] = {}
 					$scope.curSelectionCounts[userType] = 0
 				}
-				$scope[`${userType}Spinner`] = false
+				$scope.mainSpinner = false
 				$scope.$digest()
 				closeLoading()
 			}
@@ -265,7 +265,7 @@ define(function (require) {
 					// Close loading dialog once all records are processed
 					closeLoading()
 					$scope.$apply(function () {
-						$scope[`${userType}Spinner`] = true
+						$scope.mainSpinner = true
 
 						// Construct the success message
 						let message = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
@@ -298,7 +298,7 @@ define(function (require) {
 								$scope.loadData($scope.userType) // Reload data
 								$scope.removeCollapsedClass(`${userType}Header2`) // Remove collapsed class
 								$scope.removeSuccessMsg() // Remove success message
-								$scope[`${userType}Spinner`] = false // Stop the spinner
+								$scope.mainSpinner = false // Stop the spinner
 							})
 					})
 				}
