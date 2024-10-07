@@ -332,6 +332,10 @@ define(function (require) {
 	])
 	module.filter('capitalize', function () {
 		return function (input) {
+			// Check if the input is 'users'
+			if (input === 'users') {
+				return 'Staff'
+			}
 			// Check if the input is a valid string
 			if (typeof input === 'string' && input.length > 0) {
 				// Capitalize the first letter and convert the rest to lowercase
