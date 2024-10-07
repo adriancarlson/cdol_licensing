@@ -12,7 +12,6 @@
         <link href="/images/css/print.css?~[time]" rel="stylesheet" media="print">
         <link href="/images/css/cdol.css?~[time]" rel="stylesheet" media="screen">
         <link href="/images/css/cdol_print.css?~[time]" rel="stylesheet" media="print">
-        <!-- <link href="/images/css/cdol_select2.css?~[time]" rel="stylesheet" media="screen"> -->
     </head>
 
     <body>
@@ -25,25 +24,29 @@
             data-ng-cur-school-id="~(curschoolid)" data-ng-license-type="~(gpv.licenseType)"
             data-ng-user-type="~(gpv.userType)" data-ng-cloak>
             <h1 class="mb-1">{{licenseType | capitalize}} Licensing</h1>
-            <!-- <div class="container-fluid">
-                <div class="row">
-                    <div class="col-auto ms-auto"><button data-ng-click="reloadData()">Reload List</button></div>
+            <div class="btn-toolbar justify-content-between ms-3 me-4" role="toolbar">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary"
+                        data-ng-class="{'active': userType === 'students'}"
+                        data-ng-click="loadData('students')">Students</button>
+                    <button type="button" class="btn btn-outline-primary"
+                        data-ng-class="{'active': userType === 'users'}"
+                        data-ng-click="loadData('users')">Staff</button>
                 </div>
-            </div> -->
-            <div class="tabs">
-                <ul class="shown_tabs">
-                    <li data-ng-click="loadData('students')" data-context="students"><a
-                            href="#tabstudents">Students</a></li>
-                    <li data-ng-click="loadData('users')" data-context="users"><a href="#tabusers">Staff</a></li>
-                </ul>
-                <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
-                <div id="withTimer" pss-feedback-widget timed-handler="msgContext.successMsgHandler"></div>
-                <div id="wait-spinner-div" data-ng-show="studentsSpinner" class="m-3">
-                    <div data-pss-wait-spinner="large" style="background-color: transparent;"></div>
+                <div class="input-group">
+                    <button data-ng-click="addCollapsedClass(userType + 'Header2', userType)"
+                        data-ng-disabled="curSelectionCounts[userType] < 1" data-ng-show="!showAddstudentsTable">
+                        Load Current Currently Selected {{userType | capitalize }} ({{curSelectionCounts[userType]}})
+                    </button>
                 </div>
-                <student-list id="tabstudents" data-ng-show="!studentsSpinner"></student-list>
-                <user-list id="tabusers" data-ng-show="!usersSpinner"></user-list>
             </div>
+            <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
+            <div id="withTimer" pss-feedback-widget timed-handler="msgContext.successMsgHandler"></div>
+            <div id="wait-spinner-div" data-ng-show="studentsSpinner" class="m-3">
+                <div data-pss-wait-spinner="large" style="background-color: transparent;"></div>
+            </div>
+            <student-list data-ng-show="userType === 'students'"></student-list>
+            <user-list data-ng-show="userType === 'users'"></user-list>
 
         </div>
         ~[wc:admin_footer_css]
