@@ -86,7 +86,7 @@
                             data-ng-hide="!useHandstudentsSelectionRemove">Selected:
                             {{selectedRemovestudentsDcids.length}}</span></strong>
                 </div>
-                <div class="col-auto me-2">
+                <div class="col-auto me-2" data-ng-show="licenseListCounts.students > 0">
                     <button data-ng-hide="useHandstudentsSelectionRemove"
                         data-ng-click="useHandstudentsSelectionRemove = true; selectedRemovestudentsDcids = []">Select
                         By
@@ -103,7 +103,8 @@
             </div>
         </div>
         <div id="license-student-grid" data-pss-grid-widget data-data="licenseList.students"
-            data-filtered-data="filteredLicensestudentsList" data-filter-constraint="no-filters">
+            data-filtered-data="filteredLicensestudentsList" data-filter-constraint="no-filters"
+            data-ng-show="licenseListCounts.students > 0">
             <table class="grid">
                 <thead class="sticky-header">
                     <tr>
