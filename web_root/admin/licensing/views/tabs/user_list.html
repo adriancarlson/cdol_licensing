@@ -1,9 +1,9 @@
 <div data-ng-show="!mainSpinner">
-    <h2 id="usersHeader1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddusersTable">Add
-        {{licenseType | capitalize}} Licenses to Currently Selected {{userType | capitalize }}</h2>
     <div id="wait-users-spinner-div" data-ng-if="usersSpinner" class="p-4 m-3">
         <div data-pss-wait-spinner="medium" style="background-color: transparent;"></div>
     </div>
+    <h2 id="usersHeader1" pss-expand-collapse-item="collapsibleHeaders" data-ng-hide="!showAddusersTable">Add
+        {{licenseType | capitalize}} Licenses to Currently Selected {{userType | capitalize }}</h2>
     <div data-ng-hide="!showAddusersTable">
         <div class="container-fluid">
             <div class="row">

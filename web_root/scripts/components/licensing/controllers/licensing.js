@@ -178,9 +178,9 @@ define(function (require) {
 				setTimeout(function () {
 					$scope.$apply(function () {
 						$scope[`${userType}Spinner`] = false // Set spinner to false after 1 second
+						$scope[`showAdd${userType}Table`] = true
 					})
 				}, 400)
-				$scope[`showAdd${userType}Table`] = true
 			}
 
 			$scope.removeCollapsedClass = function (id) {
