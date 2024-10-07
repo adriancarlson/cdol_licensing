@@ -24,6 +24,7 @@
             data-ng-cur-school-id="~(curschoolid)" data-ng-license-type="~(gpv.licenseType)"
             data-ng-user-type="~(gpv.userType)" data-ng-cloak>
             <h1 class="mb-1">{{licenseType | capitalize}} Licensing</h1>
+            <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
             <div class="btn-toolbar justify-content-between ms-3 me-4" role="toolbar">
                 <div class="btn-group btn-group-sm" role="group">
                     <button type="button" class="btn btn-outline-primary"
@@ -40,14 +41,11 @@
                     </button>
                 </div>
             </div>
-            <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
-            <div id="withTimer" pss-feedback-widget timed-handler="msgContext.successMsgHandler"></div>
             <div id="wait-spinner-div" data-ng-show="mainSpinner" class="m-3">
                 <div data-pss-wait-spinner="large" style="background-color: transparent;"></div>
             </div>
             <student-list data-ng-show="userType === 'students'"></student-list>
             <user-list data-ng-show="userType === 'users'"></user-list>
-
         </div>
         ~[wc:admin_footer_css]
     </body>

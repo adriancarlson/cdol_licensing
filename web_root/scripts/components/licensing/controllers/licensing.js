@@ -19,8 +19,6 @@ define(function (require) {
 
 			$scope.loadData = async userType => {
 				$scope.userType = userType
-				console.log('$scope.userType', $scope.userType)
-				console.log('running Load Data userType:', userType)
 				loadingDialog()
 				$scope.mainSpinner = true
 				$scope.licenseListCounts = {}
@@ -242,7 +240,6 @@ define(function (require) {
 								license_adobe: formatService.formatChecksForApi(formatCheckValue)
 							}
 							let updateRes = await psApiService.psApiCall(`u_${apiFormatUserType}_additional_info`, 'PUT', payload, user.dcid)
-							console.log(updateRes)
 
 							// Increment totalUpdated or totalFailed based on the response status code
 							if (updateRes.response_statuscode === 200) {
@@ -268,7 +265,16 @@ define(function (require) {
 						$scope.mainSpinner = true
 
 						// Construct the success message
-						let message = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''} successfully processed.`
+						let message
+
+						if (userType === 'users') {
+							// Construct the success message for "users"
+							message = `${recordsProcessed} ${$filter('capitalize')(userType)} successfully processed.`
+						} else {
+							// Construct the success message for other user types
+							message = `${recordsProcessed} ${$filter('capitalize')(userType).slice(0, -1)}${recordsProcessed > 1 ? 's' : ''} successfully processed.`
+						}
+
 						if (totalUpdated > 0) {
 							message += ` Total ${actionVerb}: ${totalUpdated}.`
 						}
@@ -306,28 +312,19 @@ define(function (require) {
 				loadingDialog() // Start the loading dialog
 				await processRecord() // Process all users
 			}
-
-			let messages = {
-				success: [],
-				successMsgHandler: null
-			}
+			// Function to show the success message
+			let messages = { success: [] }
 			$scope.msgContext = messages
 
-			$scope.addSuccessMsg = function (message) {
+			$scope.addSuccessMsg = message => {
 				messages.success.push(message)
 			}
 
-			$scope.removeSuccessMsg = function () {
+			$scope.removeSuccessMsg = () => {
 				messages.success.splice(0, 1)
 			}
 
-			$scope.getSuccessMessages = function () {
-				return messages.success
-			}
-
-			$scope.addTimedSuccessMsg = function (message) {
-				messages.successMsgHandler.addSuccessMessage(message)
-			}
+			$scope.getSuccessMessages = () => messages.success
 		}
 	])
 	module.filter('capitalize', function () {
