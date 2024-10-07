@@ -47,10 +47,9 @@ define(function (require) {
 						$scope.licenseList[key] = value
 					}
 				}
-
+				$scope.licenseList[userType] = {}
 				// getting existing users with license
 				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData)
-
 				//updating licenseList obj
 				if (res.length > 0) {
 					updatelicenseList(userType, res)
@@ -261,6 +260,7 @@ define(function (require) {
 
 					// Close loading dialog once all records are processed
 					closeLoading()
+
 					$scope.$apply(function () {
 						$scope.mainSpinner = true
 
@@ -301,10 +301,10 @@ define(function (require) {
 								}
 							)
 							.finally(function () {
-								$scope.loadData($scope.userType) // Reload data
 								$scope.removeCollapsedClass(`${userType}Header`) // Remove collapsed class
 								$scope.removeSuccessMsg() // Remove success message
 								$scope.mainSpinner = false // Stop the spinner
+								$scope.loadData($scope.userType) // Reload data
 							})
 					})
 				}

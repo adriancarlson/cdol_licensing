@@ -25,7 +25,7 @@
             data-ng-user-type="~(gpv.userType)" data-ng-cloak>
             <h1 class="mb-1">{{licenseType | capitalize}} Licensing</h1>
             <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
-            <div class="btn-toolbar justify-content-between ms-3 me-4" role="toolbar">
+            <div class="btn-toolbar justify-content-between ms-3 me-4" role="toolbar" data-ng-show="!mainSpinner">
                 <div class="btn-group btn-group-sm" role="group">
                     <button type="button" class="btn btn-outline-primary"
                         data-ng-class="{'active': userType === 'students'}"
