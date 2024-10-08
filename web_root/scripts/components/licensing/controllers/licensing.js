@@ -125,16 +125,19 @@ define(function (require) {
 
 				// Loop through the appropriate filtered license list
 				angular.forEach(filteredLicenseList, user => {
-					user[`selectTo${toggleType}`] = isSelected // Set the state of each individual checkbox
+					// Only proceed if the first 4 letters of the license_adobe_group do not match school_abbr
+					if (user.license_adobe_group.substring(0, 4) === user.school_abbr) {
+						user[`selectTo${toggleType}`] = isSelected // Set the state of each individual checkbox
 
-					if (isSelected) {
-						// Add to the selected array if the checkbox is checked
-						if (!$scope[`selected${toggleType}${userType}Dcids`].includes(user.dcid)) {
-							$scope[`selected${toggleType}${userType}Dcids`].push(user.dcid)
+						if (isSelected) {
+							// Add to the selected array if the checkbox is checked
+							if (!$scope[`selected${toggleType}${userType}Dcids`].includes(user.dcid)) {
+								$scope[`selected${toggleType}${userType}Dcids`].push(user.dcid)
+							}
+						} else {
+							// Remove from the selected array if the checkbox is unchecked
+							$scope[`selected${toggleType}${userType}Dcids`] = $scope[`selected${toggleType}${userType}Dcids`].filter(id => id !== user.dcid)
 						}
-					} else {
-						// Remove from the selected array if the checkbox is unchecked
-						$scope[`selected${toggleType}${userType}Dcids`] = $scope[`selected${toggleType}${userType}Dcids`].filter(id => id !== user.dcid)
 					}
 				})
 

@@ -124,6 +124,7 @@
                     <tr data-ng-repeat="user in filteredLicenseusersList">
                         <td data-ng-show="useHandusersSelectionRemove"><input row-data="{{user.dcid}}" type="checkbox"
                                 data-ng-model="user.selectToRemove"
+                                data-ng-disabled="user.license_adobe_group.substring(0, 4) !== user.school_abbr"
                                 data-ng-change="toggleSelection(user.dcid, user.selectToRemove, userType, 'Remove')">
                         </td>
                         <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.dcid}}">{{user.number}}</a>
