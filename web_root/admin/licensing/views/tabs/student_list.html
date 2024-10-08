@@ -124,7 +124,7 @@
                     <tr data-ng-repeat="student in filteredLicensestudentsList">
                         <td data-ng-show="useHandstudentsSelectionRemove"><input row-data="{{student.dcid}}"
                                 type="checkbox" data-ng-model="student.selectToRemove"
-                                data-ng-disabled="student.license_adobe_group.substring(0, 4) !== student.school_abbr"
+                                data-ng-disabled="student.license_adobe_group.substring(0, 4) !== student.school_abbr && !(student.license_adobe_group.substring(0, 2)=='SH' && student.school_abbr.substring(0, 2)=='SH') && !(student.license_adobe_group.substring(0, 2)=='LS' && student.school_abbr.substring(0, 2)=='LS')"
                                 data-ng-change="toggleSelection(student.dcid, student.selectToRemove, userType, 'Remove')">
                         </td>
                         <td class="nowrap"><a href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}"

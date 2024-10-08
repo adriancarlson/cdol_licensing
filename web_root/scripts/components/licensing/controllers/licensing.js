@@ -151,8 +151,11 @@ define(function (require) {
 
 				// Loop through the appropriate filtered license list
 				angular.forEach(filteredLicenseList, user => {
-					// Only proceed if the first 4 letters of the license_adobe_group do not match school_abbr
-					if (user.license_adobe_group.substring(0, 4) === user.school_abbr) {
+					// Check the logic for enabling/disabling the checkbox
+					const canSelect = user.license_adobe_group.substring(0, 4) === user.school_abbr || (user.license_adobe_group.substring(0, 2) === 'SH' && user.school_abbr.substring(0, 2) === 'SH') || (user.license_adobe_group.substring(0, 2) === 'LS' && user.school_abbr.substring(0, 2) === 'LS')
+
+					// Proceed only if the checkbox can be selected
+					if (canSelect) {
 						user[`selectTo${toggleType}`] = isSelected // Set the state of each individual checkbox
 
 						if (isSelected) {
