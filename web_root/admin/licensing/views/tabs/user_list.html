@@ -51,7 +51,8 @@
                         <td data-ng-show="useHandusersSelectionAdd"><input row-data="{{user.dcid}}" type="checkbox"
                                 data-ng-model="user.selectToAdd"
                                 data-ng-change="toggleSelection(user.dcid, user.selectToAdd, userType,'Add')"></td>
-                        <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.dcid}}">{{user.number}}</a>
+                        <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.ssdcid}}"
+                                target="_blank">{{user.number}}</a>
                         </td>
                         <td class="nowrap">{{user.lastfirst}}</td>
                         <td class="nowrap">{{user.email_addr}}</td>
@@ -127,7 +128,8 @@
                                 data-ng-disabled="user.license_adobe_group.substring(0, 4) !== user.school_abbr"
                                 data-ng-change="toggleSelection(user.dcid, user.selectToRemove, userType, 'Remove')">
                         </td>
-                        <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.dcid}}">{{user.number}}</a>
+                        <td class="nowrap"><a href="/admin/faculty/edit.html?frn=005{{user.ssdcid}}"
+                                target="_blank">{{user.number}}</a>
                         </td>
                         <td class="nowrap">{{user.lastfirst}}</td>
                         <td class="nowrap">{{user.email_addr}}</td>

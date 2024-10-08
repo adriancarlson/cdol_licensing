@@ -50,8 +50,8 @@
                                 type="checkbox" data-ng-model="student.selectToAdd"
                                 data-ng-change="toggleSelection(student.dcid, student.selectToAdd, userType,'Add')">
                         </td>
-                        <td class="nowrap"><a
-                                href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
+                        <td class="nowrap"><a href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}"
+                                target="_blank">{{student.number}}</a>
                         </td>
                         <td class="nowrap">{{student.lastfirst}}</td>
                         <td class="nowrap">{{student.email_addr}}</td>
@@ -127,8 +127,8 @@
                                 data-ng-disabled="student.license_adobe_group.substring(0, 4) !== student.school_abbr"
                                 data-ng-change="toggleSelection(student.dcid, student.selectToRemove, userType, 'Remove')">
                         </td>
-                        <td class="nowrap"><a
-                                href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}">{{student.number}}</a>
+                        <td class="nowrap"><a href="/admin/students/generaldemographics.html?frn=001{{student.dcid}}"
+                                target="_blank">{{student.number}}</a>
                         </td>
                         <td class="nowrap">{{student.lastfirst}}</td>
                         <td class="nowrap">{{student.email_addr}}</td>

@@ -47,15 +47,40 @@ define(function (require) {
 						$scope.licenseList[key] = value
 					}
 				}
+
+				const removeDuplicates = records => {
+					// Use reduce to accumulate records by dcid
+					const uniqueRecords = records.reduce((acc, record) => {
+						// If the dcid is not in the accumulator, or the current record's ssdcid is higher, update the accumulator
+						if (!acc[record.dcid] || acc[record.dcid].ssdcid < record.ssdcid) {
+							acc[record.dcid] = record
+						}
+						return acc
+					}, {})
+
+					// Convert the accumulator object back into an array
+					return Object.values(uniqueRecords)
+				}
+
 				$scope.licenseList[userType] = {}
 				// getting existing users with license
 				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData)
+				res = removeDuplicates(res)
 				//updating licenseList obj
 				if (res.length > 0) {
 					updatelicenseList(userType, res)
 				} else {
 					$scope.licenseList[userType] = {}
 				}
+				$scope.licenseList[userType] = Object.values(
+					$scope.licenseList[userType].reduce((acc, record) => {
+						// If the dcid is not in the accumulator, or the current record's ssdcid is higher, update the accumulator
+						if (!acc[record.dcid] || acc[record.dcid].ssdcid < record.ssdcid) {
+							acc[record.dcid] = record
+						}
+						return acc
+					}, {})
+				)
 				// Calculate the number of records where license_adobe == '1'
 				$scope.licenseListCounts = $scope.licenseListCounts || {}
 				if ($scope.licenseType === 'adobe') {
@@ -67,6 +92,7 @@ define(function (require) {
 
 				// getting current selection
 				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
+				curSelectRes = removeDuplicates(curSelectRes)
 				if (curSelectRes.length > 0) {
 					$scope.curSelection[userType] = curSelectRes
 					$scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
