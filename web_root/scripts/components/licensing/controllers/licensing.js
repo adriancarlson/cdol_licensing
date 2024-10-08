@@ -262,9 +262,6 @@ define(function (require) {
 					for (let user of filteredUsers) {
 						setLoadingDialogTitle(recordsProcessed + ' of ' + totalRecs)
 
-						// Log the current user being processed
-						console.log('Processing user:', user.dcid)
-
 						// Check if the user needs an update based on the type
 						if ((type === 'Add' && (!user.license_adobe || user.license_adobe !== '1')) || (type === 'Remove' && user.license_adobe && user.license_adobe !== '0')) {
 							let payload = {
