@@ -2,7 +2,7 @@
 	"pages": [
 		{
 			"htmlID": "adobe-student-list",
-			"title": "Adobe Student Licenses",
+			"title": "Adobe Student Licensing",
 			"version": "1",
 			"contextType": "main",
 			"sortOrder": 175,
@@ -12,7 +12,7 @@
 		},
 		{
 			"htmlID": "adobe-staff-list",
-			"title": "Adobe Staff License",
+			"title": "Adobe Staff Licensing",
 			"version": "1",
 			"contextType": "main",
 			"parentHTMLID": "navPeopleStaffManagement",

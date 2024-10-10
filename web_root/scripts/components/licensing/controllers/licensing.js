@@ -226,9 +226,17 @@ define(function (require) {
 			}
 
 			$scope.confirmPopUp = (type, licenseType, userType, count) => {
+				const formattedUserType = userType === 'students' ? `${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''}` : $filter('capitalize')(userType)
 				psConfirm({
 					title: `Confirm ${type} ${$filter('capitalize')(licenseType)} License`,
-					message: `<div style="padding: 5px;"><div style="margin-left:20px;">	Please confirm you want to ${type} ${$filter('capitalize')(licenseType)} License${count > 1 ? 's' : ''} to the selected ${count} ${$filter('capitalize')(userType).slice(0, -1)}${count > 1 ? 's' : ''}</div><div class="feedback-alert">This process may require up to 24 hours for the ${$filter('capitalize')(licenseType)} License to apply.</div></div>`,
+					message: `<div style="padding: 5px;">
+                    <div style="margin-left:20px;">
+                        Please confirm you want to ${type} ${$filter('capitalize')(licenseType)} License${count > 1 ? 's' : ''} to the selected ${count} ${formattedUserType}
+                    </div>
+                    <div class="feedback-alert">
+                        This process may require up to 24 hours for the ${$filter('capitalize')(licenseType)} License to apply.
+                    </div>
+					</div>`,
 					oktext: 'Submit',
 					canceltext: 'Cancel',
 					ok: function () {
