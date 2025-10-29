@@ -1,10 +1,10 @@
 'use strict'
-define(function (require) {
+define(require => {
 	require('components/shared/index')
 	require('components/licensing/module')
 	require('components/licensing/controllers/index')
-	require('components/licensing/services/index')
 	require('components/licensing/directives/index')
+	require('components/cdolServices/services/index')
 	//bootstrap
 	require(['https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'])
 	//select2

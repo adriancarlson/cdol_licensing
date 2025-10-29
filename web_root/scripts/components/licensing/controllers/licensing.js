@@ -1,21 +1,35 @@
 'use strict'
-define(function (require) {
-	var module = require('components/licensing/module')
+define(require => {
+	const module = require('components/licensing/module')
 
 	module.controller('cdolLicensingCtrl', [
 		'$scope',
 		'$attrs',
 		'$filter',
 		'$http',
-		'pqService',
-		'psApiService',
+		'apiService',
 		'formatService',
-		function ($scope, $attrs, $filter, $http, pqService, psApiService, formatService) {
+		function ($scope, $attrs, $filter, $http, apiService, formatService) {
 			$scope.curSchoolId = $attrs.ngCurSchoolId
 			$scope.licenseType = $attrs.ngLicenseType
 			$scope.userType = $attrs.ngUserType
 
 			document.title = `${$filter('capitalize')($scope.licenseType)} Licensing`
+
+			let creds = null // cache for all creds.json values
+
+			let getCredValue = async key => {
+				if (!creds) {
+					try {
+						const response = await $http.get('/scripts/components/cdolServices/data/creds.json')
+						creds = response.data // store the full object
+					} catch (err) {
+						console.error('Failed to load creds.json', err)
+						throw err
+					}
+				}
+				return creds[key] // return just the requested key
+			}
 
 			$scope.loadData = async userType => {
 				$scope.userType = userType
@@ -64,7 +78,7 @@ define(function (require) {
 
 				$scope.licenseList[userType] = {}
 				// getting existing users with license
-				let res = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData)
+				let res = await apiService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData)
 				res = removeDuplicates(res)
 				//updating licenseList obj
 				if (res.length > 0) {
@@ -91,7 +105,7 @@ define(function (require) {
 				}
 
 				// getting current selection
-				let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
+				let curSelectRes = await apiService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
 				curSelectRes = removeDuplicates(curSelectRes)
 				if (curSelectRes.length > 0) {
 					$scope.curSelection[userType] = curSelectRes
@@ -275,7 +289,7 @@ define(function (require) {
 							let payload = {
 								license_adobe: formatService.formatChecksForApi(formatCheckValue)
 							}
-							let updateRes = await psApiService.psApiCall(`u_${apiFormatUserType}_additional_info`, 'PUT', payload, user.dcid)
+							let updateRes = await apiService.apiCall(`u_${apiFormatUserType}_additional_info`, 'PUT', payload, user.dcid)
 
 							// Increment totalUpdated or totalFailed based on the response status code
 							if (updateRes.response_statuscode === 200) {
@@ -325,10 +339,8 @@ define(function (require) {
 						message += ` ${type === 'Add' ? 'Updating' : 'Removing from'} ${$filter('capitalize')(licenseType)} License group. This could take a few minutes. Please wait ...`
 						$scope.addSuccessMsg(message)
 
-						$http({
-							url: '',
-							method: 'GET'
-						})
+						getCredValue('adobeAzureFunctionUrl')
+							.then(url => $http.get(url))
 							.then(
 								function successCallback(response) {
 									// Handle success response if needed

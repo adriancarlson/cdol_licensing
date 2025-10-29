@@ -1,4 +1,4 @@
 'use strict'
-define(function (require) {
+define(require => {
 	require('components/licensing/controllers/licensing')
 })

@@ -1,5 +1,7 @@
 'use strict'
-define(function (require) {
-	var angular = require('angular')
-	return angular.module('cdolLicensingMod', ['powerSchoolModule'])
+define(require => {
+	const angular = require('angular')
+	require('components/shared/index')
+	require('components/cdolServices/index')
+	return angular.module('cdolLicensingMod', ['powerSchoolModule', 'cdolServicesMod'])
 })

@@ -1,0 +1,5 @@
+<permission_mappings>
+    <permission name="/admin/licensing/views/tabs/licensing.html">
+        <implies allow="post">/ws/schema/query/net.cdolinc.services.table.definitions</implies>
+    </permission>
+</permission_mappings>

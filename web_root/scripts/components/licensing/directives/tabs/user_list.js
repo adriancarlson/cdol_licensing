@@ -1,6 +1,6 @@
 'use strict'
-define(function (require) {
-	let module = require('components/licensing/module')
+define(require => {
+	const module = require('components/licensing/module')
 
 	module.directive('userList', [
 		function () {
