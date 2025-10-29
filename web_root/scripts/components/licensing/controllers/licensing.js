@@ -326,7 +326,7 @@ define(function (require) {
 						$scope.addSuccessMsg(message)
 
 						$http({
-							url: 'https://adobe-powerschool-license-update.azurewebsites.net/api/adobesync?code=aeQrz7xNW2J0mXd-0Uo6JeUbu_cdhSMqTKpWOqguRLp1AzFuOEHhmQ%3D%3D',
+							url: '',
 							method: 'GET'
 						})
 							.then(
