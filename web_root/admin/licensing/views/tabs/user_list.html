@@ -7,7 +7,10 @@
     <div data-ng-hide="!showAddusersTable">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.users}} <span
+                <div class="col-auto me-auto"><strong>Total: {{filteredCurSelectionCounts.users}} <span
+                            data-ng-hide="useHandusersSelectionAdd || !filteredCurSelectionCounts.users"> <em>* filtered
+                                out {{curSelectionCounts.users - filteredCurSelectionCounts.users }}
+                                already licensed staff</em></span><span
                             data-ng-hide="!useHandusersSelectionAdd">Selected:
                             {{selectedAddusersDcids.length}}</span></strong>
                 </div>
@@ -26,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div id="license-user-add-grid" data-pss-grid-widget data-data="curSelection.users"
+        <div id="license-user-add-grid" data-pss-grid-widget data-data="filteredCurSelection.users"
             data-filtered-data="filteredLicenseusersAddList" data-filter-constraint="no-filters">
             <table class="grid">
                 <thead class="sticky-header">

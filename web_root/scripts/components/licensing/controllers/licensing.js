@@ -40,6 +40,8 @@ define(require => {
 				$scope.curSelectionCounts = {}
 				$scope.curSelection = {}
 				$scope.curSelectionDcids = {}
+				$scope.filteredCurSelection = {}
+				$scope.filteredCurSelectionCounts = {}
 				$scope[`selectedRemove${userType}Dcids`] = []
 				$scope[`useHand${userType}SelectionRemove`] = false
 				$scope[`selectedAdd${userType}`] = []
@@ -110,10 +112,12 @@ define(require => {
 				if (curSelectRes.length > 0) {
 					$scope.curSelection[userType] = curSelectRes
 					$scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
+					$scope.filteredCurSelection[userType] = $scope.curSelection[userType].filter(item => item.license_adobe !== '1')
+					$scope.filteredCurSelectionCounts[userType] = $scope.filteredCurSelection[userType].length || {}
 					$scope[`selectedAdd${userType}`] = []
 					$scope[`selectedAdd${userType}Dcids`] = []
 					$scope.curSelectionDcids[userType] = []
-					angular.forEach($scope.curSelection[userType], function (user) {
+					angular.forEach($scope.filteredCurSelection[userType], function (user) {
 						user.selectToAdd = true
 						$scope[`selectedAdd${userType}`].push(user)
 						$scope[`selectedAdd${userType}Dcids`].push(user.dcid)
@@ -121,7 +125,7 @@ define(require => {
 						$scope.selectAllAddChecked = true
 					})
 				} else {
-					$scope.curSelection[userType] = {}
+					$scope.filteredCurSelection[userType] = {}
 					$scope.curSelectionCounts[userType] = 0
 				}
 				$scope.mainSpinner = false
@@ -166,7 +170,7 @@ define(require => {
 				// Loop through the appropriate filtered license list
 				angular.forEach(filteredLicenseList, user => {
 					// Check the logic for enabling/disabling the checkbox
-					const canSelect = user.license_adobe_group.substring(0, 4) === user.school_abbr || (user.license_adobe_group.substring(0, 2) === 'SH' && user.school_abbr.substring(0, 2) === 'SH') || (user.license_adobe_group.substring(0, 2) === 'LS' && user.school_abbr.substring(0, 2) === 'LS')
+					const canSelect = toggleType === 'Remove' ? user.license_adobe_group && user.school_abbr && (user.license_adobe_group.substring(0, 4) === user.school_abbr || (user.license_adobe_group.substring(0, 2) === 'SH' && user.school_abbr.substring(0, 2) === 'SH') || (user.license_adobe_group.substring(0, 2) === 'LS' && user.school_abbr.substring(0, 2) === 'LS')) : true
 
 					// Proceed only if the checkbox can be selected
 					if (canSelect) {

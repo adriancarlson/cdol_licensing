@@ -7,7 +7,10 @@
     <div data-ng-hide="!showAddstudentsTable">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-auto me-auto"><strong>Total: {{curSelectionCounts.students}} <span
+                <div class="col-auto me-auto"><strong>Total: {{filteredCurSelectionCounts.students}} <span
+                            data-ng-hide="useHandstudentsSelectionAdd || !filteredCurSelectionCounts.students"> <em>*
+                                filtered out {{curSelectionCounts.students - filteredCurSelectionCounts.students }}
+                                already licensed students</em></span> <span
                             data-ng-hide="!useHandstudentsSelectionAdd">Selected:
                             {{selectedAddstudentsDcids.length}}</span></strong>
                 </div>
@@ -25,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div id="license-student-add-grid" data-pss-grid-widget data-data="curSelection.students"
+        <div id="license-student-add-grid" data-pss-grid-widget data-data="filteredCurSelection.students"
             data-filtered-data="filteredLicensestudentsAddList" data-filter-constraint="no-filters">
             <table class="grid">
                 <thead class="sticky-header">
