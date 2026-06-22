@@ -50,7 +50,7 @@ define(require => {
 				$scope[`showAdd${userType}Table`] = false
 
 				//setting up arguments for PQ call
-				const pqData = { schoolID: $scope.curSchoolId }
+				const pqData = { schoolID: $scope.curSchoolId, includeInactive: 0 }
 
 				//setting up function to add key and value staff list to licenseList object
 				const updatelicenseList = (key, value) => {
